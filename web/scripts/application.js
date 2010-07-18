@@ -1,6 +1,6 @@
 var count = 0;
 var app = {
-   url: '/grizzly-comet-chat/chat',
+   url: '/chat',
    initialize: function() {
       $('login-name').focus();
       app.listen();
