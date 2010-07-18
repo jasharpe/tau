@@ -2,3 +2,7 @@
 *.swp
 settings.py
 *.pyc
+.classpath
+.project
+.settings/*
+build/*
