@@ -108,10 +108,10 @@ public class AjaxCometServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        contextPath = config.getServletContext().getContextPath() + "/chat";
+        contextPath = config.getServletContext().getContextPath() + "chat";
 
         CometContext context = CometEngine.getEngine().register(contextPath);
-        context.setExpirationDelay(5 * 60 * 1000);
+        context.setExpirationDelay(12 * 60 * 60 * 1000);
     }
 
     @Override
