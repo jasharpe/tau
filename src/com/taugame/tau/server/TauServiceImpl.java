@@ -1,3 +1,4 @@
+
 package com.taugame.tau.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -19,19 +20,19 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService {
     @Override
     public void setReady(boolean ready) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void submit(Card card1, Card card2, Card card3) {
         // TODO Auto-generated method stub
-        
+
     }
 
     /**
      * Escape an html string. Escaping data received from the client helps to
      * prevent cross-site script vulnerabilities.
-     * 
+     *
      * @param html
      *            the html string to escape
      * @return the escaped string
