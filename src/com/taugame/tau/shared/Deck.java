@@ -27,4 +27,8 @@ public final class Deck {
         return deck.hasNext() ? deck.next() : null;
     }
 
+    public boolean hasCard() {
+        return deck.hasNext();
+    }
+
 }
