@@ -35,7 +35,7 @@
  * holder.
  *
  */
-package com.sun.grizzly.samples.comet;
+package com.taugame.tau.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;

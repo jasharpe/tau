@@ -1,3 +1,4 @@
+package com.taugame.tau;
 
 public final class Card {
 

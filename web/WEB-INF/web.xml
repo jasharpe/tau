@@ -9,7 +9,7 @@
   <servlet>
     <description>AjaxChatComet</description>
     <servlet-name>AjaxCometServlet</servlet-name>
-    <servlet-class>com.sun.grizzly.samples.comet.AjaxCometServlet</servlet-class>
+    <servlet-class>com.taugame.tau.server.AjaxCometServlet</servlet-class>
     <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>
