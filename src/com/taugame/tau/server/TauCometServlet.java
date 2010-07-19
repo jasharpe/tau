@@ -54,7 +54,7 @@ import com.sun.grizzly.comet.CometHandler;
 
 import java.util.logging.Logger;
 
-public class AjaxCometServlet extends HttpServlet {
+public class TauCometServlet extends HttpServlet {
     private static final String BEGIN_SCRIPT_TAG = "<script type='text/javascript'>\n";
     private static final String END_SCRIPT_TAG = "</script>\n";
     private static final Logger logger = Logger.getLogger("grizzly");
@@ -64,7 +64,7 @@ public class AjaxCometServlet extends HttpServlet {
             "servers to send data to the client without having any need " +
             "for the client to request it. -->\n";
 
-    public class ChatListnerHandler implements CometHandler<PrintWriter> {
+    public class ChatListenerHandler implements CometHandler<PrintWriter> {
 
         private PrintWriter writer;
 
@@ -108,7 +108,7 @@ public class AjaxCometServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        contextPath = config.getServletContext().getContextPath() + "chat";
+        contextPath = config.getServletContext().getContextPath() + "comet";
 
         CometContext context = CometEngine.getEngine().register(contextPath);
         context.setExpirationDelay(12 * 60 * 60 * 1000);
@@ -128,7 +128,7 @@ public class AjaxCometServlet extends HttpServlet {
         }
         writer.flush();
 
-        ChatListnerHandler handler = new ChatListnerHandler();
+        ChatListenerHandler handler = new ChatListenerHandler();
         handler.attach(writer);
 
         CometContext context = CometEngine.getEngine().register(contextPath);

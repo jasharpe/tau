@@ -1,6 +1,6 @@
 var count = 0;
 var app = {
-   url: '/chat',
+   url: '/comet',
    initialize: function() {
       $('login-name').focus();
       app.listen();

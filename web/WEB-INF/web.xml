@@ -4,17 +4,26 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4"
   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-  <description>Ajax CometApplication</description>
-  <display-name>Ajax Chat Comet</display-name>
+  <description>Tau Game</description>
+  <display-name>Tau</display-name>
   <servlet>
-    <description>AjaxChatComet</description>
-    <servlet-name>AjaxCometServlet</servlet-name>
-    <servlet-class>com.taugame.tau.server.AjaxCometServlet</servlet-class>
+    <servlet-name>tauAjaxServlet</servlet-name>
+    <servlet-class>com.taugame.tau.server.TauServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>tauAjaxServlet</servlet-name>
+    <url-pattern>/ajax</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description>TauCometServlet</description>
+    <servlet-name>TauCometServlet</servlet-name>
+    <servlet-class>com.taugame.tau.server.TauCometServlet</servlet-class>
     <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>AjaxCometServlet</servlet-name>
-    <url-pattern>/chat</url-pattern>
+    <servlet-name>TauCometServlet</servlet-name>
+    <url-pattern>/comet</url-pattern>
   </servlet-mapping>
   <session-config>
     <session-timeout>25</session-timeout>
