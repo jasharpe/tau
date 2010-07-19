@@ -1,8 +1,11 @@
 package com.taugame.tau.shared;
 
-public final class Card {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public final class Card implements Serializable /* for GWT serialization */ {
     private static final int COLOUR = 0, NUMBER = 1, FILL = 2, SHAPE = 3;
-    private final int[] properties;
+    private /* final */ int[] properties;
 
     public Card(int colour, int number, int fill, int shape) {
         properties = new int[4];
@@ -16,4 +19,6 @@ public final class Card {
         return properties[property];
     }
 
+    @SuppressWarnings("unused")
+    private Card() {}
 }
