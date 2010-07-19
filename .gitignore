@@ -1,8 +1,9 @@
 *~
 *.swp
-settings.py
-*.pyc
+web/WEB-INF/classes/
+web/tau/
 .classpath
 .project
 .settings/*
 build/*
+build.properties
