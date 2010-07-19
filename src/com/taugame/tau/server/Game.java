@@ -44,7 +44,11 @@ public class Game {
     }
 
     private static Card completeSet(Card card1, Card card2) {
-        return null;
+        return Deck.getCard(
+                TIMES_TWO_MOD_THREE[card1.get(0) + card2.get(0)],
+                TIMES_TWO_MOD_THREE[card1.get(1) + card2.get(1)],
+                TIMES_TWO_MOD_THREE[card1.get(2) + card2.get(2)],
+                TIMES_TWO_MOD_THREE[card1.get(3) + card2.get(3)]);
     }
 
     private void deal() {
