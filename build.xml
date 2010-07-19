@@ -58,11 +58,11 @@
       </classpath>
       <jvmarg value="-Xmx256M"/>
       <arg value="-startupUrl"/>
-      <arg value="tau.html"/>
+      <arg value="http://localhost:8081/"/>
       <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
       <arg value="-noserver"/>
       <arg line="${gwt.args}"/>
-      <arg value="com.taugame.tau"/>
+      <arg value="com.taugame.tau.Tau"/>
     </java>
   </target>
 
