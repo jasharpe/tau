@@ -1,4 +1,4 @@
-package com.taugame.tau;
+package com.taugame.tau.shared;
 
 public final class Card {
 

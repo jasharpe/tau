@@ -1,4 +1,4 @@
-package com.taugame.tau;
+package com.taugame.tau.shared;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
