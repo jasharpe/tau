@@ -1,6 +1,7 @@
 package com.taugame.tau.shared;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public final class Card implements Serializable /* for GWT serialization */ {
@@ -30,4 +31,9 @@ public final class Card implements Serializable /* for GWT serialization */ {
 
     @SuppressWarnings("unused")
     private Card() {}
+
+    @Override
+    public String toString() {
+        return Arrays.toString(properties);
+    }
 }

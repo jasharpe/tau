@@ -16,7 +16,7 @@ public class Tau implements EntryPoint {
             + "connection and try again.";
 
     /**
-     * Create a remote service proxy to talk to the server-side Greeting service.
+     * Create a remote service proxy to talk to the server-side Tau service.
      */
     private final TauServiceAsync tauService = GWT.create(TauService.class);
 
@@ -24,5 +24,8 @@ public class Tau implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
+        GameMaster gameMaster = new GameMaster();
+        CometMessenger.setUpdateListener(gameMaster.getModel());
+        CometMessenger.exportSendUpdate();
     }
 }
