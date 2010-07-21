@@ -5,7 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 import com.taugame.tau.shared.Card;
-import com.taugame.tau.shared.Game;
 
 public class GameMaster {
     private final Map<String, Integer> scores;
@@ -18,33 +17,29 @@ public class GameMaster {
         board = new LinkedHashSet<Card>();
     }
 
-    public boolean join(String player) {
-        if (scores.containsKey(player)) {
+    public boolean joinAs(String name) {
+        if (scores.containsKey(name)) {
             return false;
         } else {
-            scores.put(player, 0);
+            scores.put(name, 0);
             return true;
         }
     }
 
+    public void setReady(String name, boolean ready) {
+
+    }
+
     public Iterable<Card> submit(String player, Card card1, Card card2, Card card3) {
-        if (removeSet(card1, card2, card3)) {
+        if (removeTau(card1, card2, card3)) {
             scores.put(player, scores.get(player) + 1);
             return board;
         }
         return null;
     }
 
-    private static Card completeSet(Card card1, Card card2) {
-        return Deck.getCard(
-                Game.TIMES_TWO_MOD_THREE[card1.get(0) + card2.get(0)],
-                Game.TIMES_TWO_MOD_THREE[card1.get(1) + card2.get(1)],
-                Game.TIMES_TWO_MOD_THREE[card1.get(2) + card2.get(2)],
-                Game.TIMES_TWO_MOD_THREE[card1.get(3) + card2.get(3)]);
-    }
-
     private void deal() {
-        while (board.size() < 12 || !containsSet()) {
+        while (board.size() < 12 || !containsTau()) {
             if (deck.hasCard()) {
                 board.add(deck.getCard());
                 board.add(deck.getCard());
@@ -55,13 +50,13 @@ public class GameMaster {
         }
     }
 
-    private boolean containsSet() {
+    private boolean containsTau() {
         int i = 0;
         for (Card card1 : board) {
             int j = 0;
             for (Card card2 : board) {
                 if (j > i) {
-                    if (board.contains(completeSet(card1, card2))) {return true;}
+                    if (board.contains(completeTau(card1, card2))) {return true;}
                 } else {j++;}
             }
             i++;
@@ -69,9 +64,17 @@ public class GameMaster {
         return false;
     }
 
-    private boolean removeSet(Card card1, Card card2, Card card3) {
+    private static Card completeTau(Card card1, Card card2) {
+        return Deck.getCard(
+                Card.TIMES_TWO_MOD_THREE[card1.get(0) + card2.get(0)],
+                Card.TIMES_TWO_MOD_THREE[card1.get(1) + card2.get(1)],
+                Card.TIMES_TWO_MOD_THREE[card1.get(2) + card2.get(2)],
+                Card.TIMES_TWO_MOD_THREE[card1.get(3) + card2.get(3)]);
+    }
+
+    private boolean removeTau(Card card1, Card card2, Card card3) {
         if (board.contains(card1) && board.contains(card2) && board.contains(card3) &&
-                Game.isSet(card1, card2, card3)) {
+                Card.isTau(card1, card2, card3)) {
             board.remove(card1);
             board.remove(card2);
             board.remove(card3);

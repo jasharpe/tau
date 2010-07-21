@@ -1,6 +1,8 @@
 
 package com.taugame.tau.server;
 
+import java.util.HashMap;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.taugame.tau.client.TauService;
 import com.taugame.tau.shared.Card;
@@ -10,38 +12,39 @@ import com.taugame.tau.shared.Card;
  */
 @SuppressWarnings("serial")
 public class TauServiceImpl extends RemoteServiceServlet implements TauService {
+    private GameMaster gm;
+    private HashMap<String, String> names;
 
     @Override
-    public Boolean joinAs(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    public void init() throws javax.servlet.ServletException {
+        gm = new GameMaster();
+        names = new HashMap<String, String>();
+    };
 
     @Override
-    public void setReady(boolean ready) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void submit(Card card1, Card card2, Card card3) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * Escape an html string. Escaping data received from the client helps to
-     * prevent cross-site script vulnerabilities.
-     *
-     * @param html
-     *            the html string to escape
-     * @return the escaped string
-     */
-    private String escapeHtml(String html) {
-        if (html == null) {
-            return null;
+    synchronized public Boolean joinAs(String name) {
+        if (gm.joinAs(name)) {
+            names.put(getName(), name);
+            return true;
         }
-        return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;");
+        else {
+            return false;
+        }
     }
+
+    @Override
+    synchronized public void setReady(boolean ready) {
+        String name = names.get(getName());
+        gm.setReady(name, ready);
+    }
+
+    @Override
+    synchronized public void submit(Card card1, Card card2, Card card3) {
+        gm.submit(getName(), card1, card2, card3);
+    }
+
+    private String getName() {
+        return this.getThreadLocalRequest().getSession().getId();
+    }
+
 }
