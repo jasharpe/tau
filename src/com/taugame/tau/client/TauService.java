@@ -7,7 +7,7 @@ import com.taugame.tau.shared.Card;
 /**
  * The client side stub for the RPC service.
  */
-@RemoteServiceRelativePath("greet")
+@RemoteServiceRelativePath("ajax")
 public interface TauService extends RemoteService {
     Boolean joinAs(String name);
     void setReady(boolean ready);
