@@ -12,7 +12,7 @@ import com.taugame.tau.shared.Card;
 public class TauServiceImpl extends RemoteServiceServlet implements TauService {
 
     @Override
-    public Boolean joinGame(String game) {
+    public Boolean joinAs(String name) {
         // TODO Auto-generated method stub
         return null;
     }

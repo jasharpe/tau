@@ -7,7 +7,7 @@ import com.taugame.tau.shared.Card;
  * The async counterpart of <code>TauService</code>.
  */
 public interface TauServiceAsync {
-  void joinGame(String game, AsyncCallback<Boolean> callback);
+  void joinAs(String name, AsyncCallback<Boolean> callback);
   void setReady(boolean ready, AsyncCallback<Void> callback);
   void submit(Card card1, Card card2, Card card3, AsyncCallback<Void> callback);
 }

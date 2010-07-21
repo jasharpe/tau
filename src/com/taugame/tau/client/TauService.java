@@ -9,7 +9,7 @@ import com.taugame.tau.shared.Card;
  */
 @RemoteServiceRelativePath("greet")
 public interface TauService extends RemoteService {
-    Boolean joinGame(String game);
+    Boolean joinAs(String name);
     void setReady(boolean ready);
     void submit(Card card1, Card card2, Card card3);
 }

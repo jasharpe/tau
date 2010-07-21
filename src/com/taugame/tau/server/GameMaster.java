@@ -3,7 +3,6 @@ package com.taugame.tau.server;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.taugame.tau.shared.Card;
 import com.taugame.tau.shared.Game;
@@ -11,7 +10,7 @@ import com.taugame.tau.shared.Game;
 public class GameMaster {
     private final Map<String, Integer> scores;
     private final Deck deck;
-    private final Set<Card> board;
+    private final LinkedHashSet<Card> board; // needs to be ordered and have fast contains method
 
     public GameMaster() {
         scores = new HashMap<String, Integer>();
@@ -22,8 +21,7 @@ public class GameMaster {
     public boolean join(String player) {
         if (scores.containsKey(player)) {
             return false;
-        }
-        else {
+        } else {
             scores.put(player, 0);
             return true;
         }
@@ -46,13 +44,12 @@ public class GameMaster {
     }
 
     private void deal() {
-        while (!containsSet() || board.size() < 12) {
+        while (board.size() < 12 || !containsSet()) {
             if (deck.hasCard()) {
                 board.add(deck.getCard());
                 board.add(deck.getCard());
                 board.add(deck.getCard());
-            }
-            else {
+            } else {
                 return;
             }
         }
@@ -63,8 +60,9 @@ public class GameMaster {
         for (Card card1 : board) {
             int j = 0;
             for (Card card2 : board) {
-                if (j >= i) {if (board.contains(completeSet(card1, card2))) {return true;}}
-                else {j++;}
+                if (j > i) {
+                    if (board.contains(completeSet(card1, card2))) {return true;}
+                } else {j++;}
             }
             i++;
         }
@@ -72,7 +70,16 @@ public class GameMaster {
     }
 
     private boolean removeSet(Card card1, Card card2, Card card3) {
-        return false;
+        if (board.contains(card1) && board.contains(card2) && board.contains(card3) &&
+                Game.isSet(card1, card2, card3)) {
+            board.remove(card1);
+            board.remove(card2);
+            board.remove(card3);
+            deal();
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
