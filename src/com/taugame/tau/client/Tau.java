@@ -22,11 +22,15 @@ public class Tau implements EntryPoint {
      * Create a remote service proxy to talk to the server-side Tau service.
      */
     private final TauServiceAsync tauService = GWT.create(TauService.class);
+    GameModel gameModel;
 
     public void onModuleLoad() {
+        gameModel = new GameModel(tauService);
+        CometMessageHandler.setUpdateListener(new GameMessageHandler(gameModel));
+        CometMessageHandler.exportSendBoardUpdate();
+
         CometMessageHandler.exportListen();
         CometMessageHandler.listen();
-
         tauService.joinAs("asdf", new AsyncCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
@@ -35,17 +39,12 @@ public class Tau implements EntryPoint {
 
             @Override
             public void onFailure(Throwable caught) {
-                initializeGame();
-                //throw new RuntimeException("Failed to joinAs", caught);
+                throw new RuntimeException("Failed to joinAs", caught);
             }
         });
     }
 
     private void initializeGame() {
-        GameModel gameModel = new GameModel(tauService);
-        CometMessageHandler.setUpdateListener(new GameMessageHandler(gameModel));
-        CometMessageHandler.exportSendBoardUpdate();
-
         RootPanel.get("game").add(gameModel.getView().getWidget());
     }
 }

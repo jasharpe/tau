@@ -89,7 +89,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    synchronized protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html");
         resp.setHeader("Cache-Control", "private");
         resp.setHeader("Pragma", "no-cache");
@@ -103,7 +103,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService {
 
         TauCometHandler handler = new TauCometHandler();
         handler.attach(resp);
-        CometContext context = CometEngine.getEngine().register(contextPath);
+        CometContext context = CometEngine.getEngine().getCometContext(contextPath);
         context.addCometHandler(handler);
     }
 
@@ -147,7 +147,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService {
         Iterable<Card> board = gm.submit(getName(), card1, card2, card3);
         if (board != null) {
             try {
-                CometContext context = CometEngine.getEngine().register(contextPath);
+                CometContext context = CometEngine.getEngine().getCometContext(contextPath);
                 context.notify(BEGIN_SCRIPT_TAG + toJson(gm.getBoard()) + END_SCRIPT_TAG);
             } catch (IOException e) {
                 logger.info(e.toString());
