@@ -1,6 +1,7 @@
 package com.taugame.tau.client;
 
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Random;
 
 
 /**
@@ -15,18 +16,16 @@ public class CometMessageHandler {
     }
 
     private static int actionCounter = 0;
-    public static void updateBoard(String boardMessage) {
-        gameMessageHandler.updateBoard(boardMessage);
+    public static void updateBoard(UpdateData updateData) {
+        gameMessageHandler.updateBoard(updateData);
     }
 
     public static native void exportSendBoardUpdate()/*-{
-        $wnd.u = $entry(@com.taugame.tau.client.CometMessageHandler::updateBoard(Ljava/lang/String;));
+        $wnd.u = $entry(@com.taugame.tau.client.CometMessageHandler::updateBoard(Lcom/taugame/tau/client/UpdateData;));
     }-*/;
 
-    static int count = 0;
     public static void listen() {
-        DOM.getElementById("comet-frame").setAttribute("src", "/game?count=" + count);
-        count++;
+        DOM.getElementById("comet-frame").setAttribute("src", "/game?count=" + Random.nextInt());
     }
 
     public static native void exportListen()/*-{

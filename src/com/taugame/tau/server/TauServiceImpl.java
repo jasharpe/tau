@@ -126,14 +126,14 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService {
 
     private String toJson(Iterable<Card> board) {
         StringBuilder sb = new StringBuilder();
-        sb.append("window.parent.u(\"{\\\"c\\\":" + (c++) + ",\\\"b\\\":[");
+        sb.append("window.parent.u({\"c\":" + (c++) + ",\"b\":[");
         boolean first = true;
         for (Card card : board) {
             if (!first) {sb.append(",");}
             sb.append(card.toString());
             first = false;
         }
-        sb.append("]}\");\n");
+        sb.append("]});\n");
         return sb.toString();
     }
 

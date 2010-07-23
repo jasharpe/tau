@@ -11,9 +11,9 @@ public class GameMessageHandler {
         this.model = model;
     }
 
-    public void updateBoard(String boardMessage) {
-        GWT.log("boardMessage: " + boardMessage);
-        UpdateData updateData = UpdateData.parseUpdateDataJSON(boardMessage);
+    public void updateBoard(UpdateData updateData) {
+        // GWT.log("boardMessage: " + boardMessage);
+        // UpdateData updateData = UpdateData.parseUpdateDataJSON(boardMessage);
         int counter = updateData.getCounter();
 
         if (counter < actionCounter) {

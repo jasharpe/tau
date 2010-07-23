@@ -2,6 +2,7 @@ package com.taugame.tau.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -31,6 +32,16 @@ public class Tau implements EntryPoint {
 
         CometMessageHandler.exportListen();
         CometMessageHandler.listen();
+
+        new Timer() {
+            @Override
+            public void run() {
+                joinGame();
+            }
+        }.schedule(1000);
+    }
+
+    private void joinGame() {
         tauService.joinAs("asdf", new AsyncCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
