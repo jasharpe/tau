@@ -30,6 +30,6 @@ public class CometMessageHandler {
     }
 
     public static native void exportListen()/*-{
-        $wnd.u = $entry(@com.taugame.tau.client.CometMessageHandler::listen());
+        $wnd.l = $entry(@com.taugame.tau.client.CometMessageHandler::listen());
     }-*/;
 }

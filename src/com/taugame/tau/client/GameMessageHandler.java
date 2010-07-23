@@ -12,6 +12,7 @@ public class GameMessageHandler {
     }
 
     public void updateBoard(String boardMessage) {
+        GWT.log("boardMessage: " + boardMessage);
         UpdateData updateData = UpdateData.parseUpdateDataJSON(boardMessage);
         int counter = updateData.getCounter();
 

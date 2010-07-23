@@ -7,12 +7,16 @@
   <description>Tau Game</description>
   <display-name>Tau</display-name>
   <servlet>
-    <servlet-name>tauAjaxServlet</servlet-name>
+    <servlet-name>TauServiceServlet</servlet-name>
     <servlet-class>com.taugame.tau.server.TauServiceImpl</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>tauAjaxServlet</servlet-name>
-    <url-pattern>/ajax</url-pattern>
+    <servlet-name>TauServiceServlet</servlet-name>
+    <url-pattern>/game</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>TauServiceServlet</servlet-name>
+    <url-pattern>/tau/game</url-pattern>
   </servlet-mapping>
   
   <servlet>

@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Tau implements EntryPoint {
+    GameModel gameModel;
     /**
      * The message displayed to the user when the server cannot be reached or
      * returns an error.
@@ -26,7 +27,9 @@ public class Tau implements EntryPoint {
     public void onModuleLoad() {
         CometMessageHandler.exportListen();
         CometMessageHandler.listen();
-
+        gameModel = new GameModel(tauService);
+        CometMessageHandler.setUpdateListener(new GameMessageHandler(gameModel));
+        CometMessageHandler.exportSendBoardUpdate();
         tauService.joinAs("asdf", new AsyncCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
@@ -35,16 +38,14 @@ public class Tau implements EntryPoint {
 
             @Override
             public void onFailure(Throwable caught) {
-                initializeGame();
-                //throw new RuntimeException("Failed to joinAs", caught);
+                throw new RuntimeException("Failed to joinAs", caught);
             }
         });
     }
 
     private void initializeGame() {
-        GameModel gameModel = new GameModel(tauService);
-        CometMessageHandler.setUpdateListener(new GameMessageHandler(gameModel));
-        CometMessageHandler.exportSendBoardUpdate();
+        GWT.log("initializeGame() called");
+
 
         RootPanel.get("game").add(gameModel.getView().getWidget());
     }

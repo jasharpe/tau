@@ -17,6 +17,16 @@ public final class Card implements Serializable /* for GWT serialization */ {
         properties[SHAPE] = shape;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return Arrays.equals(this.properties, ((Card)other).properties);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(this.properties);
+    }
+
     public static boolean isTau(Card card1, Card card2, Card card3) {
         for (int property = 0; property < 4; property++) {
             int sum = card1.get(property) + card2.get(property);
