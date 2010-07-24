@@ -109,9 +109,8 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService {
 
     @Override
     synchronized public Boolean joinAs(String name) {
-//        if (gm.joinAs(getID())) {
-//            names.put(getID(), getID());
-        logger.info("a");
+        if (gm.joinAs(getID())) {
+            names.put(getID(), getID());
             CometContext context = CometEngine.getEngine().getCometContext(contextPath);
             try {
                 context.notify(BEGIN_SCRIPT_TAG + toJson(gm.getBoard()) + END_SCRIPT_TAG);
@@ -119,9 +118,9 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService {
                 logger.info(e.toString());
             }
             return true;
-//        } else {
-//            return false;
-//        }
+        } else {
+            return false;
+        }
     }
 
     private String toJson(Iterable<Card> board) {

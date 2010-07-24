@@ -39,31 +39,33 @@ public final class GameView {
                 Card card = cards.get(cardPosition);
                 final CardPanel cardPanel = new CardPanel();
                 cardPanelMap.put(cardPosition, cardPanel);
-                cardPanel.addStyleName("card");
-                if (model.isSelected(cardPosition)) {
-                    cardPanel.addStyleName("selectedCard");
-                } else {
-                    cardPanel.addStyleName("unselectedCard");
-                }
-                cardPanel.add(new Label(card.toString()));
-                cardPanel.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        int deselected = model.selectCard(cardPosition);
-                        if (deselected != -1) {
-                            CardPanel deselectedCardPanel = cardPanelMap.get(deselected);
-                            deselectedCardPanel.removeStyleName("selectedCard");
-                            deselectedCardPanel.addStyleName("unselectedCard");
-                        }
-                        if (model.isSelected(cardPosition)) {
-                            cardPanel.removeStyleName("unselectedCard");
-                            cardPanel.addStyleName("selectedCard");
-                        } else {
-                            cardPanel.removeStyleName("selectedCard");
-                            cardPanel.addStyleName("unselectedCard");
-                        }
+                if (card != null) {
+                    cardPanel.addStyleName("realCard");
+                    if (model.isSelected(cardPosition)) {
+                        cardPanel.addStyleName("selectedCard");
+                    } else {
+                        cardPanel.addStyleName("unselectedCard");
                     }
-                });
+                    cardPanel.add(new Label(card.toString()));
+                    cardPanel.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            int deselected = model.selectCard(cardPosition);
+                            if (deselected != -1) {
+                                CardPanel deselectedCardPanel = cardPanelMap.get(deselected);
+                                deselectedCardPanel.removeStyleName("selectedCard");
+                                deselectedCardPanel.addStyleName("unselectedCard");
+                            }
+                            if (model.isSelected(cardPosition)) {
+                                cardPanel.removeStyleName("unselectedCard");
+                                cardPanel.addStyleName("selectedCard");
+                            } else {
+                                cardPanel.removeStyleName("selectedCard");
+                                cardPanel.addStyleName("unselectedCard");
+                            }
+                        }
+                    });
+                }
                 table.setWidget(row, column, cardPanel);
             }
         }

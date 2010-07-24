@@ -5,12 +5,20 @@ import com.taugame.tau.shared.Card;
 
 public final class CardData extends JavaScriptObject {
     protected CardData() {}
-    
+
+    private native boolean isEmpty() /*-{
+        return this.length < 1;
+    }-*/;
+
     private native int getProperty(int property) /*-{
         return this[property];
     }-*/;
-    
+
     public Card toCard() {
-        return new Card(getProperty(0), getProperty(1), getProperty(2), getProperty(3));
+        if (isEmpty()) {
+            return null;
+        } else {
+            return new Card(getProperty(0), getProperty(1), getProperty(2), getProperty(3));
+        }
     }
 }
