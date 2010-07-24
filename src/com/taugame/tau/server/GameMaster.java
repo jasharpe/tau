@@ -27,13 +27,13 @@ public class GameMaster {
     }
 
     public boolean joinAs(String name) {
-//        if (scores.containsKey(name)) {
-//            return false;
-//        } else {
+        if (scores.containsKey(name)) {
+            return false;
+        } else {
             scores.put(name, 0);
-//            ready--;
+            ready--;
             return true;
-//        }
+        }
     }
 
     public void setReady(String name, boolean ready) {
