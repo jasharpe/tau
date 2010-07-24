@@ -34,7 +34,7 @@ public final class GameView {
         for (int row = 0; row < rows; row++) {
             table.insertRow(row);
             for (int column = 0; column < columns; column++) {
-                final int cardPosition = column + row * columns;
+                final int cardPosition = row + column * rows;
                 table.addCell(row);
                 Card card = cards.get(cardPosition);
                 final CardPanel cardPanel = new CardPanel();
