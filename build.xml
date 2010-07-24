@@ -23,14 +23,14 @@
 
   <target name="javac" depends="libs" description="Compile java source">
     <mkdir dir="web/WEB-INF/classes"/>
-    <javac srcdir="src" includes="**" encoding="utf-8"
+    <javac srcdir="src" includes="com/taugame/tau/client/*,com/taugame/tau/shared/*" encoding="utf-8"
         destdir="web/WEB-INF/classes"
         source="1.5" target="1.5" nowarn="true"
         debug="true" debuglevel="lines,vars,source">
         <classpath refid="project.class.path"/>
     </javac>
     <copy todir="web/WEB-INF/classes">
-      <fileset dir="src" excludes="**/*.java"/>
+      <fileset dir="src" includes="com/taugame/tau/Tau.gwt.xml,com/taugame/tau/client/*,com/taugame/tau/shared/*" excludes="**/*.java"/>
     </copy>
   </target>
 
