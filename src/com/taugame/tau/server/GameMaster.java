@@ -3,10 +3,12 @@ package com.taugame.tau.server;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.taugame.tau.shared.Card;
 
 public class GameMaster {
+    private static final Logger logger = Logger.getLogger("grizzly");
     private final Map<String, Integer> scores;
     private final Deck deck;
     private final LinkedHashSet<Card> board; // needs to be ordered and have fast contains method
@@ -69,7 +71,11 @@ public class GameMaster {
             int j = 0;
             for (Card card2 : board) {
                 if (j > i) {
-                    if (board.contains(completeTau(card1, card2))) {return true;}
+                    if (board.contains(completeTau(card1, card2))) {
+                        logger.info("ContainsTau: " + card1 + ", " + card2 + ", " +
+                                completeTau(card1, card2));
+                        return true;
+                    }
                 } else {j++;}
             }
             i++;
