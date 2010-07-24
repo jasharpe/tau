@@ -3,6 +3,7 @@ package com.taugame.tau.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.taugame.tau.shared.Card;
 
@@ -40,11 +41,12 @@ public class GameModel {
         gameView.redraw();
     }
 
-    public void selectCard(int cardPosition) {
-        selection.select(cardPosition);
+    public int selectCard(int cardPosition) {
+        int deselected = selection.select(cardPosition);
 
         if (selection.getNumberSelected() == 3) {
             List<Card> selectedCards = selection.getSelectedCards();
+            GWT.log("3 selected, checking for Tau");
             if (Card.isTau(selectedCards.get(0), selectedCards.get(1),
                     selectedCards.get(2))) {
                 // TODO keep track of attempted taus while waiting for
@@ -53,14 +55,21 @@ public class GameModel {
                 // Submits the tau to the server. The result of this will be
                 // known when the server sends the next update, so no callback
                 // is required.
+                GWT.log("submitting");
                 tauService.submit(selectedCards.get(0), selectedCards.get(1),
                         selectedCards.get(2), NO_OP_CALLBACK);
             }
         }
+
+        return deselected;
+    }
+
+    public boolean isSelected(int cardPosition) {
+        return selection.isSelected(cardPosition);
     }
 
     class Selection {
-        private static final int MAX_SELECTION = 3;
+        private static final int MAX_SELECTION_INDEX = 2;
         private List<Integer> positionsSelected = new ArrayList<Integer>();
 
         public int getNumberSelected() {
@@ -83,20 +92,22 @@ public class GameModel {
          * Updates the selection given that the card in position
          * {@code position} is clicked.
          */
-        private void select(int cardPosition) {
+        private int select(int cardPosition) {
             if (cardPosition < 0 || cardPosition >= cards.size()) {
                 throw new RuntimeException("Card position "
                         + cardPosition + " is invalid");
             }
             int selectedPosition = positionsSelected.indexOf(cardPosition);
             if (selectedPosition == -1) {
-                if (positionsSelected.size() == MAX_SELECTION) {
-                    positionsSelected.set(MAX_SELECTION, cardPosition);
+                if (positionsSelected.size() > MAX_SELECTION_INDEX) {
+                    return positionsSelected.set(MAX_SELECTION_INDEX, cardPosition);
                 } else {
                     positionsSelected.add(cardPosition);
+                    return -1;
                 }
             } else {
                 positionsSelected.remove(selectedPosition);
+                return -1;
             }
         }
 

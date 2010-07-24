@@ -1,7 +1,17 @@
 .card {
+    min-height:120px;
+    min-width:80px;
+    background-image:url('/images/placeholder.png');
+}
+
+.selectedCard {
+	border-color:red;
+    border-width:1px;
+    border-style:solid;
+}
+
+.unselectedCard {
     border-color:black;
     border-width:1px;
-    background-color:blue;
-    min-height:50px;
-    max-width:25px;
+    border-style:solid;
 }
