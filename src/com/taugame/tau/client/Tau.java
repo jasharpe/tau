@@ -1,9 +1,7 @@
 package com.taugame.tau.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -22,40 +20,24 @@ public class Tau implements EntryPoint {
     /**
      * Create a remote service proxy to talk to the server-side Tau service.
      */
-    private final TauServiceAsync tauService = GWT.create(TauService.class);
+
     GameModel gameModel;
 
     public void onModuleLoad() {
-        gameModel = new GameModel(tauService);
-        CometMessageHandler.setUpdateListener(new GameMessageHandler(gameModel));
         CometMessageHandler.exportSendBoardUpdate();
-
         CometMessageHandler.exportListen();
         CometMessageHandler.listen();
 
         new Timer() {
             @Override
             public void run() {
-                joinGame();
+                initialize();
             }
         }.schedule(1000);
     }
 
-    private void joinGame() {
-        tauService.joinAs("asdf", new AsyncCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean result) {
-                initializeGame();
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                throw new RuntimeException("Failed to joinAs", caught);
-            }
-        });
-    }
-
-    private void initializeGame() {
-        RootPanel.get("game").add(gameModel.getView().getWidget());
+    private void initialize() {
+        StateController stateController = new StateController(RootPanel.get("game"));
+        stateController.changeState(StateController.State.NONE, StateController.State.START);
     }
 }

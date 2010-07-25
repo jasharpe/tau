@@ -2,8 +2,10 @@ package com.taugame.tau.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.taugame.tau.client.StateController.State;
 import com.taugame.tau.shared.Card;
 
 public class GameModel {
@@ -17,11 +19,13 @@ public class GameModel {
     private final Selection selection = new Selection();
     private final GameView gameView = new GameView(this);
     private final TauServiceAsync tauService;
+    private final StateController stateController;
 
     private List<Card> cards = new ArrayList<Card>();
 
-    public GameModel(TauServiceAsync tauService) {
+    public GameModel(TauServiceAsync tauService, StateController stateController) {
         this.tauService = tauService;
+        this.stateController = stateController;
         gameView.redraw();
     }
 
@@ -38,6 +42,11 @@ public class GameModel {
         // TODO persist selections that make sense
         selection.clear();
         gameView.redraw();
+        stateController.forceChangeState(State.GAME_IN_PROGRESS);
+    }
+
+    public void endGame(SortedMap<String, Integer> scoreMap) {
+        // TODO handle this
     }
 
     public int selectCard(int cardPosition) {

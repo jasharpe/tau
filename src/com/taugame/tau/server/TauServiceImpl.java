@@ -31,7 +31,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     private String contextPath;
     private GameMaster gm;
     private HashMap<String, String> names;
-    private int c = 0;
+    private Integer c = 0;
 
     private static final String JUNK =
         "<!-- Comet is a programming technique that enables web " +
@@ -131,6 +131,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     @Override
     synchronized public void setReady(boolean ready) {
         String name = getName();
+        logger.info(name + (ready ? "is ready" : "is not ready"));
         if (name != null) {
             gm.setReady(name, ready);
         }
@@ -175,7 +176,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         try {
             CometContext context = CometEngine.getEngine().getCometContext(contextPath);
             context.notify(BEGIN_SCRIPT + "u({"
-                    + toJson("c", String.valueOf(c++))
+                    + toJson("c", c++)
                     + json
                     + "});\n" + END_SCRIPT);
         } catch (IOException e) {

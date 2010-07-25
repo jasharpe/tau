@@ -31,12 +31,11 @@ public class SpriteGenerator {
         Graphics2D graphics = bufferedImage.createGraphics();
 
         //colour, number, fill, shape
-        List<int[]> cards = new ArrayList<int[]>();
         for (int colour = 0; colour < 3; colour++) {
             for (int number = 0; number < 3; number++) {
                 for (int fill = 0; fill < 3; fill++) {
                     for (int shape = 0; shape < 3; shape++) {
-                        int xBase = (shape + 3 * fill + 9 * number + 27 * colour) * width;
+                        int xBase = (colour + 3 * number + 9 * fill + 27 * shape) * width;
                         int yBase = 0;
                         drawCard(graphics, xBase, yBase, width, height, colour, number, fill, shape);
                     }
@@ -106,11 +105,11 @@ public class SpriteGenerator {
 
         Color color;
         if (colour == 0) {
-            color = Color.BLUE;
-        } else if (colour == 1) {
             color = Color.RED;
-        } else {
+        } else if (colour == 1) {
             color = Color.GREEN;
+        } else {
+            color = Color.BLUE;
         }
 
         if (fill == 1) {

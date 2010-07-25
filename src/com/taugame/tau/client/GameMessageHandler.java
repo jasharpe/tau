@@ -3,17 +3,19 @@ package com.taugame.tau.client;
 import com.google.gwt.core.client.GWT;
 
 public class GameMessageHandler {
-    private final GameModel model;
+    private final LobbyModel lobbyModel;
+    private final GameModel gameModel;
 
     private int actionCounter = 0;
 
-    public GameMessageHandler(GameModel model) {
-        this.model = model;
+    public GameMessageHandler(LobbyModel lobbyModel, GameModel gameModel) {
+        this.lobbyModel = lobbyModel;
+        this.gameModel = gameModel;
     }
 
-    public void updateBoard(UpdateData updateData) {
-        // GWT.log("boardMessage: " + boardMessage);
-        // UpdateData updateData = UpdateData.parseUpdateDataJSON(boardMessage);
+
+
+    public void routeMessage(UpdateData updateData) {
         int counter = updateData.getCounter();
 
         if (counter < actionCounter) {
@@ -22,6 +24,12 @@ public class GameMessageHandler {
         }
         actionCounter = counter;
 
-        model.updateBoard(updateData.getCards());
+        if (updateData.isLobbyUpdate()) {
+            lobbyModel.updateLobby(updateData);
+        } else if (updateData.isBoardUpdate()) {
+            gameModel.updateBoard(updateData.getCards());
+        } else if (updateData.isEndUpdate()) {
+            gameModel.endGame(updateData.getScoreMap());
+        }
     }
 }

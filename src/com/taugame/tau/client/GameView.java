@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 import com.taugame.tau.shared.Card;
 
-public final class GameView {
+public final class GameView implements View {
 
     private final GameModel model;
     private final FlexTable table = new FlexTable();
@@ -48,7 +48,7 @@ public final class GameView {
                     int cardNumber = card.get(0) + 3 * card.get(1) + 9 * card.get(2) + 27 * card.get(3);
                     int offset = cardNumber * 80;
                     cardPanel.getElement().setAttribute("style",
-                            "background-position: -" + offset + "px 0");
+                            "background-position: -" + offset + "px 0;");
                     //cardPanel.add(new Label(card.toString()));
                     cardPanel.addClickHandler(new ClickHandler() {
                         @Override
