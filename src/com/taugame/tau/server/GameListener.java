@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 public interface GameListener {
 
+    void statusChanged();
     void boardChanged(Board board);
     void gameEnded(List<Entry<String, Integer>> rankings);
 

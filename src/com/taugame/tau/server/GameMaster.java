@@ -25,23 +25,25 @@ public class GameMaster {
         scores = new HashMap<String, Integer>();
         deck = new Deck();
         board = new Board();
+        deal();
         started = false;
         ready = 0;
     }
 
-    public boolean joinAs(String name) {
-//        if (scores.containsKey(name)) {
-//            return false;
-//        } else {
+    public void joinAs(String name) {
+        if (!scores.containsKey(name)) {
             if (started) {
                 scores.put(name, 0);
-                sendUpdateEvent();
             } else {
                 scores.put(name, -1);
                 ready--;
             }
-            return true;
-//        }
+        }
+        if (started) {
+            sendUpdateEvent();
+        } else {
+            sendStatusEvent();
+        }
     }
 
     public void setReady(String name, boolean ready) {
@@ -50,9 +52,9 @@ public class GameMaster {
                 if (scores.get(name) == -1) {
                     scores.put(name, 0);
                     this.ready++;
+                    sendStatusEvent();
                     if (this.ready == 0) {
                         started = true;
-                        deal();
                         sendUpdateEvent();
                     }
                 }
@@ -60,6 +62,7 @@ public class GameMaster {
                 if (scores.get(name) == 0) {
                     scores.put(name, -1);
                     this.ready--;
+                    sendStatusEvent();
                 }
             }
         }
@@ -70,6 +73,10 @@ public class GameMaster {
             scores.put(player, scores.get(player) + 1);
             sendUpdateEvent();
         }
+    }
+
+    private void sendStatusEvent() {
+        listener.statusChanged();
     }
 
     private void sendUpdateEvent() {

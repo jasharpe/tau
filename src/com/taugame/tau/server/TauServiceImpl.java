@@ -25,9 +25,9 @@ import com.taugame.tau.shared.Card;
  */
 @SuppressWarnings("serial")
 public class TauServiceImpl extends RemoteServiceServlet implements TauService, GameListener {
-    private static final String BEGIN_SCRIPT_TAG = "<script type='text/javascript'>\n";
-    private static final String END_SCRIPT_TAG = "</script>\n";
     private static final Logger logger = Logger.getLogger("grizzly");
+    private static final String BEGIN_SCRIPT = "<script type='text/javascript'>\nwindow.parent.";
+    private static final String END_SCRIPT = "</script>\n";
     private String contextPath;
     private GameMaster gm;
     private HashMap<String, String> names;
@@ -60,7 +60,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
 
         @Override
         public void onInterrupt(CometEvent event) throws IOException {
-            String script = BEGIN_SCRIPT_TAG + "window.parent.l();\n" + END_SCRIPT_TAG;
+            String script = BEGIN_SCRIPT + "l();\n" + END_SCRIPT;
             logger.info("CometEvent.INTERRUPT => {}" + script);
             PrintWriter writer = response.getWriter();
             writer.println(script);
@@ -109,37 +109,39 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         context.addCometHandler(handler);
     }
 
+    synchronized public String join() {
+        String name = getName();
+        if (name != null) {
+            joinAs(name);
+        }
+        return name;
+    }
+
     @Override
     synchronized public Boolean joinAs(String name) {
-        if (gm.joinAs(getID())) {
-            names.put(getID(), getID());
-            setReady(true);
+        if (name != null && !name.equals("") && !names.containsValue(name)) {
+            names.put(getID(), name);
+            gm.joinAs(name);
             return true;
         } else {
             return false;
         }
     }
 
-    private String toJson(Board board) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("window.parent.u({\"c\":" + (c++) + ",\"b\":");
-        sb.append(board.toString());
-        sb.append("});\n");
-        return sb.toString();
-    }
-
-    private String toJson(List<Entry<String, Integer>> rankings) {
-        return "window.parent.e(" + rankings.toString() + ");\n";
-    }
-
     @Override
     synchronized public void setReady(boolean ready) {
-        gm.setReady(getName(), ready);
+        String name = getName();
+        if (name != null) {
+            gm.setReady(name, ready);
+        }
     }
 
     @Override
     synchronized public void submit(Card card1, Card card2, Card card3) {
-        gm.submit(getName(), card1, card2, card3);
+        String name = getName();
+        if (name != null) {
+            gm.submit(name, card1, card2, card3);
+        }
     }
 
     private String getName() {
@@ -151,23 +153,42 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     }
 
     @Override
+    public void statusChanged() {
+        notifyUpdate(toJson("t", "l"));
+    }
+
+    @Override
     public void boardChanged(Board board) {
+        notifyUpdate(
+                toJson("t", "b") +
+                toJson("b", board));
+    }
+
+    @Override
+    public void gameEnded(List<Entry<String, Integer>> rankings) {
+        notifyUpdate(
+                toJson("t", "e") +
+                toJson("s", rankings));
+    }
+
+    private void notifyUpdate(String json) {
         try {
             CometContext context = CometEngine.getEngine().getCometContext(contextPath);
-            context.notify(BEGIN_SCRIPT_TAG + toJson(board) + END_SCRIPT_TAG);
+            context.notify(BEGIN_SCRIPT + "u({"
+                    + toJson("c", String.valueOf(c++))
+                    + json
+                    + "});\n" + END_SCRIPT);
         } catch (IOException e) {
             logger.info(e.toString());
         }
     }
 
-    @Override
-    public void gameEnded(List<Entry<String, Integer>> rankings) {
-        try {
-            CometContext context = CometEngine.getEngine().getCometContext(contextPath);
-            context.notify(BEGIN_SCRIPT_TAG + toJson(rankings) + END_SCRIPT_TAG);
-        } catch (IOException e) {
-            logger.info(e.toString());
-        }
+    private String toJson(String key, String value) {
+        return toJson(key, (Object)("\"" + value + "\""));
+    }
+
+    private String toJson(String key, Object value) {
+        return "\"" + key + "\":" + value + ",";
     }
 
 }
