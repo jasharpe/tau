@@ -1,17 +1,17 @@
 /* have to include border in width/height */
 .fakeCard {
-    min-width:82px;
-    min-height:122px;
+    width:82px;
+    height:122px;
 }
 
 .realCard {
-	min-height:120px;
-    min-width:80px;
-	background-image:url('/images/placeholder.png');
+    height:120px;
+    width:80px;
+    background:url('/images/cards.png') no-repeat scroll 0 0 transparent;
 }
 
 .selectedCard {
-	border-color:red;
+    border-color:red;
     border-width:1px;
     border-style:solid;
 }

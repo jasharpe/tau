@@ -7,7 +7,6 @@ import java.util.Map;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.taugame.tau.shared.Card;
 
@@ -46,7 +45,11 @@ public final class GameView {
                     } else {
                         cardPanel.addStyleName("unselectedCard");
                     }
-                    cardPanel.add(new Label(card.toString()));
+                    int cardNumber = card.get(0) + 3 * card.get(1) + 9 * card.get(2) + 27 * card.get(3);
+                    int offset = cardNumber * 80;
+                    cardPanel.getElement().setAttribute("style",
+                            "background-position: -" + offset + "px 0");
+                    //cardPanel.add(new Label(card.toString()));
                     cardPanel.addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {

@@ -3,7 +3,6 @@ package com.taugame.tau.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.taugame.tau.shared.Card;
 
@@ -46,7 +45,6 @@ public class GameModel {
 
         if (selection.getNumberSelected() == 3) {
             List<Card> selectedCards = selection.getSelectedCards();
-            GWT.log("3 selected, checking for Tau");
             if (Card.isTau(selectedCards.get(0), selectedCards.get(1),
                     selectedCards.get(2))) {
                 // TODO keep track of attempted taus while waiting for
@@ -55,7 +53,6 @@ public class GameModel {
                 // Submits the tau to the server. The result of this will be
                 // known when the server sends the next update, so no callback
                 // is required.
-                GWT.log("submitting");
                 tauService.submit(selectedCards.get(0), selectedCards.get(1),
                         selectedCards.get(2), NO_OP_CALLBACK);
             }
