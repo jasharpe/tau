@@ -7,7 +7,7 @@ public final class CardData extends JavaScriptObject {
     protected CardData() {}
 
     private native boolean isEmpty() /*-{
-        return this.length < 1;
+        return this === null;
     }-*/;
 
     private native int getProperty(int property) /*-{
