@@ -20,7 +20,11 @@ public class LobbyModel {
         return view;
     }
 
-    public boolean toggleReady() {
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void toggleReady() {
         isReady = !isReady;
         tauService.setReady(isReady, new AsyncCallback<Void>() {
             @Override public void onSuccess(Void result) {
@@ -31,7 +35,6 @@ public class LobbyModel {
                 throw new RuntimeException("failed to set ready", caught);
             }
         });
-        return isReady;
     }
 
     public void updateLobby(UpdateData updateData) {

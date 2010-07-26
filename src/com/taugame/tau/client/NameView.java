@@ -36,7 +36,7 @@ public class NameView implements View {
         panel.add(nameBox);
     }
 
-    public void resetName() {
-
+    public void setFocus() {
+        nameBox.setFocus(true);
     }
 }

@@ -4,28 +4,57 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.taugame.tau.shared.Card;
 
-public final class GameView implements View {
+public final class GameView implements View, ClickHandler {
 
     private final GameModel model;
+    private final VerticalPanel panel = new VerticalPanel();
+    private final Button restartButton;
     private final FlexTable table = new FlexTable();
 
     public GameView(GameModel model) {
         this.model = model;
+        restartButton = new Button("restart", this);
     }
 
     public Widget getWidget() {
-        return table;
+        return panel;
+    }
+
+    @Override
+    public void onClick(ClickEvent event) {
+        restartButton.setEnabled(false);
+        model.restart();
     }
 
     public void redraw() {
         int columns = getNumberOfCardColumns();
         int rows = getNumberOfCardRows();
+
+        panel.clear();
+        if (model.getOver()) {
+            GWT.log("Rendering end game table");
+            List<SimpleImmutablePair<String, Integer>> scores = model.getScores();
+            Grid grid = new Grid(scores.size(), 2);
+            int row = 0;
+            for (SimpleImmutablePair<String, Integer> entry : scores) {
+                grid.setWidget(row, 0, new Label(entry.getFirst()));
+                grid.setWidget(row, 1, new Label(String.valueOf(entry.getSecond())));
+                row++;
+            }
+            panel.add(grid);
+            panel.add(restartButton);
+        }
 
         table.removeAllRows();
         List<Card> cards = model.getCards();
@@ -68,10 +97,14 @@ public final class GameView implements View {
                             }
                         }
                     });
+                } else {
+                    cardPanel.addStyleName("fakeCard");
                 }
                 table.setWidget(row, column, cardPanel);
             }
         }
+
+        panel.insert(table, 0);
     }
 
     private int getNumberOfCardColumns() {

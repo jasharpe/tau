@@ -2,7 +2,6 @@ package com.taugame.tau.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.taugame.tau.client.StateController.State;
@@ -16,37 +15,50 @@ public class GameModel {
             @Override public void onSuccess(Void result) {}
         };
 
-    private final Selection selection = new Selection();
-    private final GameView gameView = new GameView(this);
+    private final GameView view = new GameView(this);
     private final TauServiceAsync tauService;
     private final StateController stateController;
 
+    private Selection selection = new Selection();
     private List<Card> cards = new ArrayList<Card>();
+    private boolean over = false;
+    private List<SimpleImmutablePair<String, Integer>> scores;
 
     public GameModel(TauServiceAsync tauService, StateController stateController) {
         this.tauService = tauService;
         this.stateController = stateController;
-        gameView.redraw();
+        view.redraw();
     }
 
     public GameView getView() {
-        return gameView;
+        return view;
     }
 
     public List<Card> getCards() {
         return cards;
     }
 
+    public boolean getOver() {
+        return over;
+    }
+
+    public List<SimpleImmutablePair<String, Integer>> getScores() {
+        return scores;
+    }
+
     public void updateBoard(List<Card> cards) {
         this.cards = cards;
         // TODO persist selections that make sense
         selection.clear();
-        gameView.redraw();
+        view.redraw();
         stateController.forceChangeState(State.GAME_IN_PROGRESS);
     }
 
-    public void endGame(SortedMap<String, Integer> scoreMap) {
-        // TODO handle this
+    public void endGame(List<SimpleImmutablePair<String, Integer>> scores) {
+        this.scores = scores;
+        over = true;
+        view.redraw();
+        stateController.forceChangeState(State.GAME_IN_PROGRESS);
     }
 
     public int selectCard(int cardPosition) {
@@ -120,5 +132,9 @@ public class GameModel {
         private void clear() {
             positionsSelected.clear();
         }
+    }
+
+    public void restart() {
+        stateController.changeState(State.GAME_IN_PROGRESS, State.RESTART);
     }
 }

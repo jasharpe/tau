@@ -1,6 +1,5 @@
 package com.taugame.tau.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -16,7 +15,7 @@ public class LobbyView implements View, ClickHandler {
     public LobbyView(LobbyModel model) {
         this.model = model;
         final LobbyModel thisModel = this.model;
-        readyButton = new Button("ready", this);
+        readyButton = new Button("I'm ready", this);
     }
 
     public Widget getWidget() {
@@ -29,18 +28,17 @@ public class LobbyView implements View, ClickHandler {
     }
 
     public void doneLoading() {
+        if (model.isReady()) {
+            readyButton.setText("I'm not ready");
+        } else {
+            readyButton.setText("I'm ready");
+        }
         readyButton.setEnabled(true);
     }
 
     @Override
     public void onClick(ClickEvent event) {
         readyButton.setEnabled(false);
-        if (model.toggleReady()) {
-            GWT.log("Toggling to ready");
-            readyButton.setText("unready");
-        } else {
-            GWT.log("Toggling to not ready");
-            readyButton.setText("ready");
-        }
+        model.toggleReady();
     }
 }

@@ -29,7 +29,7 @@ public class NameModel {
                     stateController.changeState(State.ENTER_NAME,
                             State.GAME_STATE_UNKNOWN);
                 } else {
-                    view.resetName();
+                    // TODO
                 }
             }
 

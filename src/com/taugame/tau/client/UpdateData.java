@@ -2,8 +2,6 @@ package com.taugame.tau.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -21,7 +19,12 @@ public final class UpdateData extends JavaScriptObject {
         JsArray<CardData> cardDatas = getCardDatas();
         List<Card> cards = new ArrayList<Card>();
         for (int i = 0; i < cardDatas.length(); i++) {
-            cards.add(cardDatas.get(i).toCard());
+            CardData cardData = cardDatas.get(i);
+            if (cardData == null) {
+                cards.add(null);
+            } else {
+                cards.add(cardData.toCard());
+            }
         }
         return cards;
     }
@@ -46,17 +49,18 @@ public final class UpdateData extends JavaScriptObject {
         return this.t == "e";
     }-*/;
 
-    public native JsArray<ScoreData> getScoreList() /*-{
+    public native JsArray<ScoreData> getNativeScoreList() /*-{
         return this.s;
     }-*/;
 
-    public SortedMap<String, Integer> getScoreMap() {
-        JsArray<ScoreData> scoreArray = getScoreList();
-        SortedMap<String, Integer> scoreMap = new TreeMap<String, Integer>();
+    public List<SimpleImmutablePair<String, Integer>> getScoreList() {
+        JsArray<ScoreData> scoreArray = getNativeScoreList();
+        List<SimpleImmutablePair<String, Integer>> scoreList =
+            new ArrayList<SimpleImmutablePair<String, Integer>>();
         for (int i = 0; i < scoreArray.length(); i++) {
             ScoreData scoreData = scoreArray.get(i);
-            scoreMap.put(scoreData.getName(), scoreData.getScore());
+            scoreList.add(new SimpleImmutablePair<String, Integer>(scoreData.getName(), scoreData.getScore()));
         }
-        return scoreMap;
+        return scoreList;
     }
 }

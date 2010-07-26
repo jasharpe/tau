@@ -41,20 +41,28 @@ public class StateController {
     }
 
     public void changeState(State fromState, State toState) {
-        // prevent already stale states from grabbing control.
-        if (fromState != state) {
+        GWT.log("State change: " + fromState + " -> " + toState);
+
+        // don't bother to state transition back into the same state
+        if (toState == state) {
+            GWT.log("No state change needed");
             return;
         }
 
+        // prevent already stale states from grabbing control.
+        if (fromState != state) {
+            GWT.log("Invalid previous state");
+            return;
+        }
+
+        state = toState;
         if (toState == State.NONE) {
             user = null;
             gameContainer.clear();
             views.clear();
-            state = toState;
             changeState(State.NONE, State.START);
         } else if (toState == State.START) {
             initializeGame();
-            state = toState;
             tauService.join(new AsyncCallback<String>() {
                 @Override public void onSuccess(String userName) {
                     if (userName == null) {
@@ -70,16 +78,15 @@ public class StateController {
                 }
             });
         } else if (toState == State.ENTER_NAME) {
-            state = toState;
-            View nameView = views.get(State.ENTER_NAME);
+            NameView nameView = (NameView) views.get(State.ENTER_NAME);
             if (nameView == null) {
                 nameView = new NameModel(tauService, this).getView();
                 views.put(State.ENTER_NAME, nameView);
             }
             gameContainer.clear();
             gameContainer.add(nameView.getWidget());
+            nameView.setFocus();
         } else if (toState == State.GAME_STATE_UNKNOWN) {
-            state = toState;
             View waitingView = views.get(State.GAME_STATE_UNKNOWN);
             if (waitingView == null) {
                 waitingView = new WaitingView();
@@ -88,30 +95,23 @@ public class StateController {
             gameContainer.clear();
             gameContainer.add(waitingView.getWidget());
         } else if (toState == State.GAME_LOBBY) {
-            state = toState;
             initializeGame();
             View lobbyView = views.get(State.GAME_LOBBY);
             gameContainer.clear();
             gameContainer.add(lobbyView.getWidget());
         } else if (toState == State.GAME_IN_PROGRESS) {
-            state = toState;
             initializeGame();
             View gameView = views.get(State.GAME_IN_PROGRESS);
             gameContainer.clear();
             gameContainer.add(gameView.getWidget());
-        } else if (toState == State.GAME_OVER) {
-            state = toState;
-            View gameOverView = views.get(State.GAME_OVER);
-            if (gameOverView == null) {
-                gameOverView = new GameOverModel(tauService, this).getView();
-                views.put(State.GAME_OVER, gameOverView);
-            }
-            gameContainer.clear();
-            gameContainer.add(gameOverView.getWidget());
+        } else if (toState == State.RESTART) {
+            views.remove(State.GAME_IN_PROGRESS);
+            views.remove(State.GAME_LOBBY);
+            changeState(State.RESTART, State.START);
         }
     }
 
     public enum State {
-        NONE, START, ENTER_NAME, GAME_STATE_UNKNOWN, GAME_LOBBY, GAME_IN_PROGRESS, GAME_OVER;
+        NONE, START, ENTER_NAME, GAME_STATE_UNKNOWN, GAME_LOBBY, GAME_IN_PROGRESS, RESTART;
     }
 }
