@@ -101,6 +101,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         resp.setContentType("text/html");
         resp.setHeader("Cache-Control", "private");
         resp.setHeader("Pragma", "no-cache");
+        req.getSession();
 
         // For IE, Safari and Chrome, we must output some junk to enable streaming
         PrintWriter writer = resp.getWriter();
@@ -110,9 +111,9 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         writer.flush();
 
         TauCometHandler handler = new TauCometHandler();
-        handler.attach(resp);
         handlers.put(req.getSession().getId(), handler);
         inGame.put(handler, false);
+        handler.attach(resp);
         CometContext context = CometEngine.getEngine().getCometContext(contextPath);
         context.addCometHandler(handler);
     }
