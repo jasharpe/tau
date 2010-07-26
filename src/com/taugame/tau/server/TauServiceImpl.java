@@ -31,6 +31,8 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     private String contextPath;
     private GameMaster gm;
     private HashMap<String, String> names;
+    private HashMap<String, TauCometHandler> handlers;
+    private HashMap<TauCometHandler, Boolean> inGame;
     private Integer c = 0;
 
     private static final String JUNK =
@@ -48,11 +50,13 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
 
         @Override
         public void onEvent(CometEvent event) throws IOException {
-            String output = (String) event.attachment();
-            logger.info("CometEvent.NOTIFY => {}" + output);
-            PrintWriter writer = response.getWriter();
-            writer.println(output);
-            writer.flush();
+            if (inGame.get(this)) {
+                String output = (String) event.attachment();
+                logger.info("CometEvent.NOTIFY => {}" + output);
+                PrintWriter writer = response.getWriter();
+                writer.println(output);
+                writer.flush();
+            }
         }
 
         @Override
@@ -85,6 +89,8 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         super.init(config);
         gm = new GameMaster(this);
         names = new HashMap<String, String>();
+        handlers = new HashMap<String, TauCometHandler>();
+        inGame = new HashMap<TauCometHandler, Boolean>();
         contextPath = config.getServletContext().getContextPath() + "game";
         CometContext context = CometEngine.getEngine().register(contextPath);
         context.setExpirationDelay(60 * 60 * 1000);
@@ -107,6 +113,8 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         handler.attach(resp);
         CometContext context = CometEngine.getEngine().getCometContext(contextPath);
         context.addCometHandler(handler);
+        handlers.put(req.getSession().getId(), handler);
+        inGame.put(handler, false);
     }
 
     synchronized public String join() {
@@ -121,6 +129,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     synchronized public Boolean joinAs(String name) {
         if (name != null && !name.equals("") && !names.containsValue(name)) {
             names.put(getID(), name);
+            inGame.put(handlers.get(getID()), true);
             gm.joinAs(name);
             return true;
         } else {
@@ -131,7 +140,6 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     @Override
     synchronized public void setReady(boolean ready) {
         String name = getName();
-        logger.info(name + (ready ? "is ready" : "is not ready"));
         if (name != null) {
             gm.setReady(name, ready);
         }
@@ -167,18 +175,26 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
 
     @Override
     public void gameEnded(List<Entry<String, Integer>> rankings) {
+        StringBuilder sb = new StringBuilder("[");
+        for (Entry<String, Integer> entry : rankings) {
+            sb.append("[" + entry.getKey() + "," + entry.getValue() + "],");
+        }
+        sb.append("]");
         notifyUpdate(
                 toJson("t", "e") +
-                toJson("s", rankings));
+                toJson("s", sb));
     }
 
     private void notifyUpdate(String json) {
         try {
             CometContext context = CometEngine.getEngine().getCometContext(contextPath);
-            context.notify(BEGIN_SCRIPT + "u({"
-                    + toJson("c", c++)
-                    + json
-                    + "});\n" + END_SCRIPT);
+//            Set<CometHandler> handlers = context.getCometHandlers();
+//            for (CometHandler handler : handlers) {
+                context.notify(BEGIN_SCRIPT + "u({"
+                        + toJson("c", c++)
+                        + json
+                        + "});\n" + END_SCRIPT);
+//            }
         } catch (IOException e) {
             logger.info(e.toString());
         }

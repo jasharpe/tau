@@ -52,10 +52,11 @@ public class GameMaster {
                 if (scores.get(name) == -1) {
                     scores.put(name, 0);
                     this.ready++;
-                    sendStatusEvent();
                     if (this.ready == 0) {
                         started = true;
                         sendUpdateEvent();
+                    } else {
+                        sendStatusEvent();
                     }
                 }
             } else {
