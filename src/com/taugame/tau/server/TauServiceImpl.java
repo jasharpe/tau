@@ -111,16 +111,17 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
 
         TauCometHandler handler = new TauCometHandler();
         handler.attach(resp);
-        CometContext context = CometEngine.getEngine().getCometContext(contextPath);
-        context.addCometHandler(handler);
         handlers.put(req.getSession().getId(), handler);
         inGame.put(handler, false);
+        CometContext context = CometEngine.getEngine().getCometContext(contextPath);
+        context.addCometHandler(handler);
     }
 
     synchronized public String join() {
         String name = getName();
         if (name != null) {
-            joinAs(name);
+            inGame.put(handlers.get(getID()), true);
+            gm.joinAs(name);
         }
         return name;
     }
@@ -177,7 +178,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     public void gameEnded(List<Entry<String, Integer>> rankings) {
         StringBuilder sb = new StringBuilder("[");
         for (Entry<String, Integer> entry : rankings) {
-            sb.append("[" + entry.getKey() + "," + entry.getValue() + "],");
+            sb.append("[\"" + entry.getKey() + "\"," + entry.getValue() + "],");
         }
         sb.append("]");
         notifyUpdate(
