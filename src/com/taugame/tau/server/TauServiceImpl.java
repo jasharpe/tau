@@ -11,6 +11,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.sun.grizzly.comet.CometContext;
@@ -32,7 +33,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     private GameMaster gm;
     private HashMap<String, String> names;
     private HashMap<String, TauCometHandler> handlers;
-    private HashMap<TauCometHandler, Boolean> inGame;
+    private HashMap<String, Boolean> inGame;
     private Integer c = 0;
 
     private static final String JUNK =
@@ -41,7 +42,12 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         "for the client to request it. -->\n";
 
     public class TauCometHandler implements CometHandler<HttpServletResponse> {
-        HttpServletResponse response;
+        private HttpServletResponse response;
+        private final String sessionId;
+
+        public TauCometHandler(String sessionId) {
+            this.sessionId = sessionId;
+        }
 
         @Override
         public void attach(HttpServletResponse attachment) {
@@ -50,7 +56,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
 
         @Override
         public void onEvent(CometEvent event) throws IOException {
-            if (inGame.get(this)) {
+            if (inGame.get(sessionId) != null && inGame.get(sessionId)) {
                 String output = (String) event.attachment();
                 logger.info("CometEvent.NOTIFY => {}" + output);
                 PrintWriter writer = response.getWriter();
@@ -90,7 +96,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         gm = new GameMaster(this);
         names = new HashMap<String, String>();
         handlers = new HashMap<String, TauCometHandler>();
-        inGame = new HashMap<TauCometHandler, Boolean>();
+        inGame = new HashMap<String, Boolean>();
         contextPath = config.getServletContext().getContextPath() + "game";
         CometContext context = CometEngine.getEngine().register(contextPath);
         context.setExpirationDelay(60 * 60 * 1000);
@@ -101,7 +107,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         resp.setContentType("text/html");
         resp.setHeader("Cache-Control", "private");
         resp.setHeader("Pragma", "no-cache");
-        req.getSession();
+        HttpSession session = req.getSession();
 
         // For IE, Safari and Chrome, we must output some junk to enable streaming
         PrintWriter writer = resp.getWriter();
@@ -110,9 +116,11 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         }
         writer.flush();
 
-        TauCometHandler handler = new TauCometHandler();
-        handlers.put(req.getSession().getId(), handler);
-        inGame.put(handler, false);
+        TauCometHandler handler = new TauCometHandler(session.getId());
+        handlers.put(session.getId(), handler);
+        if (!inGame.containsKey(session.getId())) {
+            inGame.put(session.getId(), false);
+        }
         handler.attach(resp);
         CometContext context = CometEngine.getEngine().getCometContext(contextPath);
         context.addCometHandler(handler);
@@ -121,8 +129,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     synchronized public String join() {
         String name = getName();
         if (name != null) {
-            inGame.put(handlers.get(getID()), true);
-            gm.joinAs(name);
+            joinGame(name);
         }
         return name;
     }
@@ -131,12 +138,20 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     synchronized public Boolean joinAs(String name) {
         if (name != null && !name.equals("") && !names.containsValue(name)) {
             names.put(getID(), name);
-            inGame.put(handlers.get(getID()), true);
-            gm.joinAs(name);
+            joinGame(name);
             return true;
         } else {
             return false;
         }
+    }
+
+    private void joinGame(String name) {
+        if (gm.isEnded()) {
+            gm = new GameMaster(this);
+            inGame = new HashMap<String, Boolean>();
+        }
+        inGame.put(getID(), true);
+        gm.joinAs(name);
     }
 
     @Override
@@ -190,13 +205,10 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
     private void notifyUpdate(String json) {
         try {
             CometContext context = CometEngine.getEngine().getCometContext(contextPath);
-//            Set<CometHandler> handlers = context.getCometHandlers();
-//            for (CometHandler handler : handlers) {
                 context.notify(BEGIN_SCRIPT + "u({"
                         + toJson("c", c++)
                         + json
                         + "});\n" + END_SCRIPT);
-//            }
         } catch (IOException e) {
             logger.info(e.toString());
         }

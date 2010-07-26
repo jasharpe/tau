@@ -84,6 +84,10 @@ public class GameMaster {
         }
     }
 
+    public boolean isEnded() {
+        return ended;
+    }
+
     private void sendStatusEvent() {
         listener.statusChanged();
     }

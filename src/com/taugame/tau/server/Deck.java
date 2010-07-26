@@ -8,6 +8,7 @@ import java.util.List;
 import com.taugame.tau.shared.Card;
 
 public final class Deck {
+    private static final boolean DEBUG = false;
     private static final List<Card> cards;
     private final Iterator<Card> deck;
 
@@ -28,6 +29,11 @@ public final class Deck {
         List<Card> shuffle = new ArrayList<Card>(cards);
         Collections.shuffle(shuffle);
         deck = shuffle.iterator();
+        if (DEBUG) {
+            for (int i = 0; i < 66; i++) {
+                getCard();
+            }
+        }
     }
 
     public Card getCard() {
