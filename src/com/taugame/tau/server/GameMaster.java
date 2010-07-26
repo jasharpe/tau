@@ -18,6 +18,7 @@ public class GameMaster {
     private final Deck deck;
     private final Board board;
     private boolean started;
+    private boolean ended;
     private int ready;
 
     public GameMaster(GameListener listener) {
@@ -27,6 +28,7 @@ public class GameMaster {
         board = new Board();
         deal();
         started = false;
+        ended = false;
         ready = 0;
     }
 
@@ -41,6 +43,9 @@ public class GameMaster {
         }
         if (started) {
             sendUpdateEvent();
+            if (ended) {
+                sendEndEvent();
+            }
         } else {
             sendStatusEvent();
         }
@@ -73,6 +78,9 @@ public class GameMaster {
         if (removeTau(card1, card2, card3)) {
             scores.put(player, scores.get(player) + 1);
             sendUpdateEvent();
+            if (ended) {
+                sendEndEvent();
+            }
         }
     }
 
@@ -104,7 +112,7 @@ public class GameMaster {
                 board.add(deck.getCard());
                 board.add(deck.getCard());
             } else {
-                sendEndEvent();
+                ended = true;
                 return;
             }
         }
