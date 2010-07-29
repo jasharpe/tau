@@ -29,8 +29,10 @@
     <servlet-name>TauCometServlet</servlet-name>
     <url-pattern>/comet</url-pattern>
   </servlet-mapping>
-  <session-config>
-    <session-timeout>25</session-timeout>
-  </session-config>
+  
+  <listener>
+    <listener-class>com.taugame.tau.server.TauContextListener</listener-class>
+  </listener>
+  
 </web-app>
 

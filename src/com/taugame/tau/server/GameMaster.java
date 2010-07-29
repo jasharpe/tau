@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
@@ -14,33 +14,38 @@ import com.taugame.tau.shared.Card;
 public class GameMaster {
     private static final Logger logger = Logger.getLogger("grizzly");
     private final GameListener listener;
-    private final Map<String, Integer> scores;
+    private final Map<String, Player> players;
     private final Deck deck;
     private final Board board;
     private boolean started;
     private boolean ended;
     private int ready;
+    private int unready;
 
     public GameMaster(GameListener listener) {
         this.listener = listener;
-        scores = new HashMap<String, Integer>();
+        players = new HashMap<String, Player>();
         deck = new Deck();
         board = new Board();
         deal();
         started = false;
         ended = false;
         ready = 0;
+        unready = 0;
     }
 
     public void joinAs(String name) {
-        if (!scores.containsKey(name)) {
+        if (!players.containsKey(name)) {
+            Player player = new Player();
+            players.put(name, player);
             if (started) {
-                scores.put(name, 0);
+                player.isReady = true;
             } else {
-                scores.put(name, -1);
-                ready--;
+                unready++;
             }
         }
+        // Someone already in the game could leave and come back and call joinAs.
+        // They would need to receive updates.
         if (started) {
             sendUpdateEvent();
             if (ended) {
@@ -51,32 +56,28 @@ public class GameMaster {
         }
     }
 
-    public void setReady(String name, boolean ready) {
-        if (scores.containsKey(name)) {
-            if (ready) {
-                if (scores.get(name) == -1) {
-                    scores.put(name, 0);
-                    this.ready++;
-                    if (this.ready == 0) {
-                        started = true;
-                        sendUpdateEvent();
-                    } else {
-                        sendStatusEvent();
-                    }
-                }
-            } else {
-                if (scores.get(name) == 0) {
-                    scores.put(name, -1);
-                    this.ready--;
-                    sendStatusEvent();
-                }
+    public void setReady(String name, boolean isReady) {
+        Player player = players.get(name);
+        if (player != null) {
+            if (isReady && !player.isReady) {
+                player.isReady = true;
+                ready++;
+                unready--;
+                sendStatusEvent();
+                startIfReady();
+            } else if (!isReady && player.isReady) {
+                player.isReady = false;
+                ready--;
+                unready++;
+                sendStatusEvent();
             }
         }
     }
 
-    public void submit(String player, Card card1, Card card2, Card card3) {
+    public void submit(String name, Card card1, Card card2, Card card3) {
         if (removeTau(card1, card2, card3)) {
-            scores.put(player, scores.get(player) + 1);
+            Player player = players.get(name);
+            player.score++;
             sendUpdateEvent();
             if (ended) {
                 sendEndEvent();
@@ -84,8 +85,41 @@ public class GameMaster {
         }
     }
 
+    public void leave(String name) {
+        Player player = players.get(name);
+        if (!started && player != null) {
+            if (player.isReady) {
+                player.isReady = false;
+                ready--;
+                sendStatusEvent();
+            } else {
+                unready--;
+                sendStatusEvent();
+                startIfReady();
+            }
+        }
+    }
+
+    public void reenter(String name) {
+        Player player = players.get(name);
+        if (!started && player != null) {
+            if (player.isReady) {
+                player.isReady = false;
+            }
+            unready++;
+            sendStatusEvent();
+        }
+    }
+
     public boolean isEnded() {
         return ended;
+    }
+
+    private void startIfReady() {
+        if (ready > 0 && unready == 0) {
+            started = true;
+            sendUpdateEvent();
+        }
     }
 
     private void sendStatusEvent() {
@@ -97,8 +131,10 @@ public class GameMaster {
     }
 
     private void sendEndEvent() {
-        Set<Entry<String, Integer>> set = scores.entrySet();
-        ArrayList<Entry<String, Integer>> list = new ArrayList<Entry<String, Integer>>(set);
+        ArrayList<Entry<String, Integer>> list = new ArrayList<Entry<String, Integer>>();
+        for (Entry<String, Player> playerEntry : players.entrySet()) {
+            list.add(new SimpleEntry<String, Integer>(playerEntry.getKey(), playerEntry.getValue().score));
+        }
         Collections.sort(list, new Comparator<Entry<String, Integer>>(){
 
             public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
