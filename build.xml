@@ -6,6 +6,8 @@
   <!-- Arguments to gwtc and devmode targets -->
   <property name="gwt.args" value="" />
 
+	<property name="war.file" value="build/tau.war" />
+
   <path id="project.class.path">
     <pathelement location="web/WEB-INF/classes"/>
     <!-- <pathelement location="${gwt.sdk}/gwt-user.jar"/> -->
@@ -13,6 +15,7 @@
     <!-- <fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/> -->
     <!-- Add any additional non-server libs (such as JUnit) -->
     <fileset dir="web/WEB-INF/lib" includes="**/*.jar"/>
+  	<fileset dir="lib" includes="**/*.jar"/>
   </path>
 
   <target name="libs" description="Copy libs to WEB-INF/lib">
@@ -23,7 +26,7 @@
 
   <target name="javac" depends="libs" description="Compile java source">
     <mkdir dir="web/WEB-INF/classes"/>
-    <javac srcdir="src" includes="com/taugame/tau/client/*,com/taugame/tau/shared/*" encoding="utf-8"
+    <javac srcdir="src" includes="com/taugame/tau/client/*,com/taugame/tau/shared/*,com/taugame/tau/server/*" encoding="utf-8"
         destdir="web/WEB-INF/classes"
         source="1.5" target="1.5" nowarn="true"
         debug="true" debuglevel="lines,vars,source">
@@ -135,7 +138,17 @@ Test targets suppressed because -junit argument was not specified when running w
   <target name="build" depends="gwtc" description="Build this project" />
 
   <target name="war" depends="build" description="Create a war file">
-    <zip destfile="tau.war" basedir="web"/>
+    <zip destfile="${war.file}" basedir="web"/>
+  </target>
+
+  <!-- depends="upload" -->
+  <target name="upload" depends="war" description="Upload war file to server">
+    <scp file="${war.file}" trust="true" todir="root@taugame.com:~/deploy" keyfile="${privatekey}"/>
+  </target>
+	
+  <!-- depends="upload" -->
+  <target name="deploy" depends="upload" description="Deploy the war file to server">
+    <sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}" command=""/>
   </target>
 
   <target name="clean" description="Cleans this project">
