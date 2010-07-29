@@ -141,14 +141,13 @@ Test targets suppressed because -junit argument was not specified when running w
     <zip destfile="${war.file}" basedir="web"/>
   </target>
 
-  <!-- depends="upload" -->
   <target name="upload" depends="war" description="Upload war file to server">
     <scp file="${war.file}" trust="true" todir="root@taugame.com:~/deploy" keyfile="${privatekey}"/>
   </target>
 	
-  <!-- depends="upload" -->
   <target name="deploy" depends="upload" description="Deploy the war file to server">
-    <sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}" command=""/>
+    <sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}"
+  	command="glassfishv3/glassfish/bin/asadmin --secure=true deploy --force=true --contextroot='/' deploy/tau.war"/>
   </target>
 
   <target name="clean" description="Cleans this project">
