@@ -21,3 +21,7 @@
     border-width:1px;
     border-style:solid;
 }
+
+.gwt-Button {
+    padding: 2px 6px;
+}
