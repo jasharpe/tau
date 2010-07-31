@@ -150,6 +150,11 @@ Test targets suppressed because -junit argument was not specified when running w
   	command="glassfishv3/glassfish/bin/asadmin --secure=true deploy --force=true --contextroot='/' deploy/tau.war"/>
   </target>
 
+  <target name="restart-server" description="Restart the production server">
+  	<sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}"
+  	command="/etc/init.d/glassfish restart"/>
+  </target>
+	
   <target name="clean" description="Cleans this project">
     <delete dir="web/WEB-INF/classes" failonerror="false" />
     <delete dir="web/tau" failonerror="false" />
