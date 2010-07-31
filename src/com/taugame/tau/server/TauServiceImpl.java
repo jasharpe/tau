@@ -58,7 +58,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         }
 
         @Override
-        public void onEvent(CometEvent event) throws IOException {
+        public void onEvent(@SuppressWarnings("unchecked") CometEvent event) throws IOException {
             if (inGame.get(sessionId) != null && inGame.get(sessionId)) {
                 String output = (String) event.attachment();
                 logger.info("CometEvent.NOTIFY => {}" + output);
@@ -69,10 +69,10 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         }
 
         @Override
-        public void onInitialize(CometEvent event) throws IOException {}
+        public void onInitialize(@SuppressWarnings("unchecked") CometEvent event) throws IOException {}
 
         @Override
-        public void onInterrupt(CometEvent event) throws IOException {
+        public void onInterrupt(@SuppressWarnings("unchecked") CometEvent event) throws IOException {
             String script = BEGIN_SCRIPT + "l();\n" + END_SCRIPT;
             logger.info("CometEvent.INTERRUPT => {}" + script);
             PrintWriter writer = response.getWriter();
@@ -83,12 +83,13 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         }
 
         @Override
-        public void onTerminate(CometEvent event) throws IOException {
+        public void onTerminate(@SuppressWarnings("unchecked") CometEvent event) throws IOException {
             removeThisFromContext();
         }
 
         private void removeThisFromContext() throws IOException {
             response.getWriter().close();
+            @SuppressWarnings("unchecked")
             CometContext context = CometEngine.getEngine().getCometContext(contextPath);
             context.removeCometHandler(this);
         }
@@ -102,6 +103,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         handlers = new HashMap<String, TauCometHandler>();
         inGame = new HashMap<String, Boolean>();
         contextPath = config.getServletContext().getContextPath() + "game";
+        @SuppressWarnings("unchecked")
         CometContext context = CometEngine.getEngine().register(contextPath);
         context.setExpirationDelay(60 * 60 * 1000);
         junker = new Thread(new Junker());
@@ -129,12 +131,14 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
 
         TauCometHandler handler = new TauCometHandler(gm, session.getId());
         handlers.put(session.getId(), handler);
+        // TODO: reinstantiating inGame later in the code - is that ok?
         if (!inGame.containsKey(session.getId())) {
             inGame.put(session.getId(), false);
         } else {
             gm.reenter(names.get(session.getId()));
         }
         handler.attach(resp);
+        @SuppressWarnings("unchecked")
         CometContext context = CometEngine.getEngine().getCometContext(contextPath);
         context.addCometHandler(handler);
     }
@@ -218,6 +222,7 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
 
     private void notify(String text) {
         try {
+            @SuppressWarnings("unchecked")
             CometContext context = CometEngine.getEngine().getCometContext(contextPath);
             context.notify(text);
         } catch (IOException e) {
@@ -242,8 +247,9 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
             while (true) {
                 try {
                     Thread.sleep(60 * 1000);
-                } catch (Exception e) {
+                } catch (InterruptedException e) {
                     logger.info(e.toString());
+                    break;
                 }
                 TauServiceImpl.this.notify(JUNK);
             }
