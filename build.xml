@@ -1,77 +1,77 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <project name="tau" default="build" basedir=".">
-  <!-- should include grizzly=(SOMETHING LIKE C:/glassfishv3/glassfish/modules) -->
-  <property file="build.properties"/>
-  
-  <!-- Arguments to gwtc and devmode targets -->
-  <property name="gwt.args" value="" />
+	<!-- should include grizzly=(SOMETHING LIKE C:/glassfishv3/glassfish/modules) -->
+	<property file="build.properties"/>
+
+	<!-- Arguments to gwtc and devmode targets -->
+	<property name="gwt.args" value="" />
 
 	<property name="war.file" value="build/tau.war" />
 
-  <path id="project.class.path">
-    <pathelement location="web/WEB-INF/classes"/>
-    <!-- <pathelement location="${gwt.sdk}/gwt-user.jar"/> -->
-    <fileset dir="${grizzly}" includes="*.jar"/>
-    <!-- <fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/> -->
-    <!-- Add any additional non-server libs (such as JUnit) -->
-    <fileset dir="web/WEB-INF/lib" includes="**/*.jar"/>
-  	<fileset dir="lib" includes="**/*.jar"/>
-  </path>
+	<path id="project.class.path">
+		<pathelement location="web/WEB-INF/classes"/>
+		<!-- <pathelement location="${gwt.sdk}/gwt-user.jar"/> -->
+		<fileset dir="${grizzly}" includes="*.jar"/>
+		<!-- <fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/> -->
+		<!-- Add any additional non-server libs (such as JUnit) -->
+		<fileset dir="web/WEB-INF/lib" includes="**/*.jar"/>
+		<fileset dir="lib" includes="**/*.jar"/>
+	</path>
 
-  <target name="libs" description="Copy libs to WEB-INF/lib">
-    <mkdir dir="web/WEB-INF/lib" />
-    <!-- <copy todir="web/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar" /> -->
-    <!-- Add any additional server libs that need to be copied -->
-  </target>
+	<target name="libs" description="Copy libs to WEB-INF/lib">
+		<mkdir dir="web/WEB-INF/lib" />
+		<!-- <copy todir="web/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar" /> -->
+		<!-- Add any additional server libs that need to be copied -->
+	</target>
 
-  <target name="javac" depends="libs" description="Compile java source">
-    <mkdir dir="web/WEB-INF/classes"/>
-    <javac srcdir="src" includes="com/taugame/tau/client/*,com/taugame/tau/shared/*,com/taugame/tau/server/*" encoding="utf-8"
+	<target name="javac" depends="libs" description="Compile java source">
+		<mkdir dir="web/WEB-INF/classes"/>
+		<javac srcdir="src" includes="com/taugame/tau/client/*,com/taugame/tau/shared/*,com/taugame/tau/server/*" encoding="utf-8"
         destdir="web/WEB-INF/classes"
         source="1.5" target="1.5" nowarn="true"
         debug="true" debuglevel="lines,vars,source">
-        <classpath refid="project.class.path"/>
-    </javac>
-    <copy todir="web/WEB-INF/classes">
-      <fileset dir="src" includes="com/taugame/tau/Tau.gwt.xml,com/taugame/tau/client/*,com/taugame/tau/shared/*" excludes="**/*.java"/>
-    </copy>
-  </target>
+			<classpath refid="project.class.path"/>
+		</javac>
+		<copy todir="web/WEB-INF/classes">
+			<fileset dir="src" includes="com/taugame/tau/Tau.gwt.xml,com/taugame/tau/client/*,com/taugame/tau/shared/*" excludes="**/*.java"/>
+		</copy>
+	</target>
 
-  <target name="gwtc" depends="javac" description="GWT compile to JavaScript">
-    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
-      <classpath>
-        <pathelement location="src"/>
-        <path refid="project.class.path"/>
-      </classpath>
-      <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
-      <jvmarg value="-Xmx256M"/>
-      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
-      <arg value="-war"/>
-      <arg value="web"/>
-      <arg line="${gwt.args}"/>
-      <arg value="com.taugame.tau.Tau"/>
-    </java>
-  </target>
+	<target name="gwtc" depends="javac" description="GWT compile to JavaScript">
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+			<classpath>
+				<pathelement location="src"/>
+				<path refid="project.class.path"/>
+			</classpath>
+			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+			<jvmarg value="-Xmx256M"/>
+			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+			<arg value="-war"/>
+			<arg value="web"/>
+			<arg line="${gwt.args}"/>
+			<arg value="com.taugame.tau.Tau"/>
+		</java>
+	</target>
 
-  <target name="devmode" depends="javac" description="Run development mode">
-    <java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
-      <classpath>
-        <pathelement location="src"/>
-        <path refid="project.class.path"/>
-      </classpath>
-      <jvmarg value="-Xmx256M"/>
-      <arg value="-startupUrl"/>
-      <arg value="${localhost}"/>
-      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
-      <arg value="-noserver"/>
-      <arg value="-war"/>
-      <arg value="web"/>
-      <arg line="${gwt.args}"/>
-      <arg value="com.taugame.tau.Tau"/>
-    </java>
-  </target>
+	<target name="devmode" depends="javac" description="Run development mode">
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.DevMode">
+			<classpath>
+				<pathelement location="src"/>
+				<path refid="project.class.path"/>
+			</classpath>
+			<jvmarg value="-Xmx256M"/>
+			<arg value="-startupUrl"/>
+			<arg value="${localhost}"/>
+			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+			<arg value="-noserver"/>
+			<arg value="-war"/>
+			<arg value="web"/>
+			<arg line="${gwt.args}"/>
+			<arg value="com.taugame.tau.Tau"/>
+		</java>
+	</target>
 
-<!--
+	<!--
 Test targets suppressed because -junit argument was not specified when running webAppCreator.
 
   <target name="javac.tests" depends="javac" description="Compiles test code">
@@ -133,31 +133,41 @@ Test targets suppressed because -junit argument was not specified when running w
   </target>
 -->
 
-  <target name="hosted" depends="devmode" description="Run development mode (NOTE: the 'hosted' target is deprecated)" />
+	<target name="hosted" depends="devmode" description="Run development mode (NOTE: the 'hosted' target is deprecated)" />
 
-  <target name="build" depends="gwtc" description="Build this project" />
+	<target name="build" depends="gwtc" description="Build this project" />
 
-  <target name="war" depends="build" description="Create a war file">
-    <zip destfile="${war.file}" basedir="web"/>
-  </target>
+	<target name="war" depends="build" description="Create a war file">
+		<zip destfile="${war.file}" basedir="web"/>
+	</target>
 
-  <target name="upload" depends="war" description="Upload war file to server">
-    <scp file="${war.file}" trust="true" todir="root@taugame.com:~/deploy" keyfile="${privatekey}"/>
-  </target>
-	
-  <target name="deploy" depends="upload" description="Deploy the war file to server">
-    <sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}"
+	<target name="upload" depends="war" description="Upload war file to server">
+		<scp file="${war.file}" trust="true" todir="root@taugame.com:~/deploy" keyfile="${privatekey}"/>
+	</target>
+
+	<target name="deploy" depends="upload" description="Deploy the war file to server">
+		<sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}"
   	command="glassfishv3/glassfish/bin/asadmin --secure=true deploy --force=true --contextroot='/' deploy/tau.war"/>
-  </target>
-
-  <target name="restart-server" description="Restart the production server">
-  	<sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}"
-  	command="/etc/init.d/glassfish restart"/>
-  </target>
+	</target>
 	
-  <target name="clean" description="Cleans this project">
-    <delete dir="web/WEB-INF/classes" failonerror="false" />
-    <delete dir="web/tau" failonerror="false" />
-  </target>
+	<target name="redeploy" description="Deploy the war file to server from an already uploaded version">
+        <sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}"
+    command="glassfishv3/glassfish/bin/asadmin --secure=true deploy --force=true --contextroot='/' deploy/tau.war"/>
+    </target>
+
+	<target name="restart-server" description="Restart the production server">
+		<sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}"
+			   command="/etc/init.d/glassfish restart"/>
+	</target>
+
+	<target name="log" description="Tail the log">
+		<sshexec host="taugame.com" username="root" trust="true" keyfile="${privatekey}"
+			   command="tail -f glassfishv3/glassfish/domains/taugame.com/logs/server.log"/>
+	</target>
+
+	<target name="clean" description="Cleans this project">
+		<delete dir="web/WEB-INF/classes" failonerror="false" />
+		<delete dir="web/tau" failonerror="false" />
+	</target>
 
 </project>
