@@ -142,7 +142,7 @@ Test targets suppressed because -junit argument was not specified when running w
 	</target>
 
 	<target name="upload" depends="war" description="Upload war file to server">
-		<scp file="${war.file}" trust="true" todir="root@taugame.com:~/deploy" keyfile="${privatekey}"/>
+		<scp file="${war.file}" trust="true" todir="root@taugame.com:~/deploy" keyfile="${privatekey}" passphrase=""/>
 	</target>
 
 	<target name="deploy" depends="upload" description="Deploy the war file to server">
