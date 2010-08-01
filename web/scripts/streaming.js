@@ -47,9 +47,7 @@ longRequest = function() {
 			}
 			byteoffset = buffer.length - newdata.length;
 		} else if (streamreq.readyState == 4) {
-			if (typeof (r) == "function") {
-				r();
-			}
+			r();
 			delete streamreq;
 		}
 	};
@@ -61,5 +59,3 @@ window.l = function() {
 	r();
 	longRequest();
 };
-
-window.l();

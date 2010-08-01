@@ -29,6 +29,7 @@ public class Tau implements EntryPoint {
         new Timer() {
             @Override
             public void run() {
+                startListening();
                 initialize();
             }
         }.schedule(1000);
@@ -38,4 +39,8 @@ public class Tau implements EntryPoint {
         StateController stateController = new StateController(RootPanel.get("game"));
         stateController.changeState(StateController.State.NONE, StateController.State.START);
     }
+
+    private native void startListening() /*-{
+        $wnd.l();
+    }-*/;
 }
