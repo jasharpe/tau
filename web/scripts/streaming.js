@@ -5,17 +5,17 @@ log = function(msg) {
 };
 
 r = function() {
-	if (window.persistentRequest != null) {
-		window.persistentRequest.abort();
+	if (persistentRequest != null) {
+		persistentRequest.abort();
 	}
 };
 
-window.persistentRequest = null;
+persistentRequest = null;
 
-start_delimiter = "<s" + "cript type='text/javascript'>";
-end_delimiter = "</" + "script>";
+startDelimiter = "<s" + "cript type='text/javascript'>";
+endDelimiter = "</" + "script>";
 
-window.longRequest = function() {
+longRequest = function() {
 	streamreq = new XMLHttpRequest();
 	byteoffset = 0;
 	var url = "/game?nuclear_launch_code=" + Math.random();//Math.floor(Math.random() * 10000000);
@@ -28,13 +28,13 @@ window.longRequest = function() {
 			var newdata = buffer.substring(byteoffset);
 			byteoffset = buffer.length;
 			while (1) {
-				var x = newdata.indexOf(start_delimiter);
+				var x = newdata.indexOf(startDelimiter);
 				if (x != -1) {
-					y = newdata.indexOf(end_delimiter, x);
+					y = newdata.indexOf(endDelimiter, x);
 					if (y != -1) {
 						//alert(newdata.substring((x + start_delimiter.length), y));
-						eval(newdata.substring((x + start_delimiter.length), y));
-						newdata = newdata.substring(y + end_delimiter.length);
+						eval(newdata.substring((x + startDelimiter.length), y));
+						newdata = newdata.substring(y + endDelimiter.length);
 					} else {
 						// Last message is incomplete. Ignore it and it will be
 						// fetched again
@@ -53,5 +53,13 @@ window.longRequest = function() {
 			delete streamreq;
 		}
 	};
+	persistentRequest = streamreq;
 	streamreq.send(null);
 };
+
+window.l = function() {
+	r();
+	longRequest();
+};
+
+window.l();

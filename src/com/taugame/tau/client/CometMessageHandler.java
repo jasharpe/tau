@@ -25,15 +25,4 @@ public class CometMessageHandler {
     public static native void exportSendBoardUpdate()/*-{
         $wnd.u = $entry(@com.taugame.tau.client.CometMessageHandler::updateBoard(Lcom/taugame/tau/client/UpdateData;));
     }-*/;
-
-    public native static void listen() /*-{
-        if ($wnd.persistentRequest != null) {
-            $wnd.persistentRequest.abort();
-        }
-        $wnd.longRequest();
-    }-*/;
-
-    public static native void exportListen()/*-{
-        $wnd.l = $entry(@com.taugame.tau.client.CometMessageHandler::listen());
-    }-*/;
 }

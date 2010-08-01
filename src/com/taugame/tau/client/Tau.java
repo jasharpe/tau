@@ -25,8 +25,6 @@ public class Tau implements EntryPoint {
 
     public void onModuleLoad() {
         CometMessageHandler.exportSendBoardUpdate();
-        CometMessageHandler.exportListen();
-        CometMessageHandler.listen();
 
         new Timer() {
             @Override
