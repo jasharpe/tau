@@ -7,6 +7,8 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
@@ -33,6 +35,7 @@ public final class GameView implements View, ClickHandler {
 
     @Override
     public void onClick(ClickEvent event) {
+        event.preventDefault();
         restartButton.setEnabled(false);
         model.restart();
     }
@@ -95,6 +98,12 @@ public final class GameView implements View, ClickHandler {
                                 cardPanel.removeStyleName("selectedCard");
                                 cardPanel.addStyleName("unselectedCard");
                             }
+                        }
+                    });
+                    cardPanel.addMouseDownHandler(new MouseDownHandler() {
+                        @Override
+                        public void onMouseDown(MouseDownEvent event) {
+                            event.preventDefault();
                         }
                     });
                 } else {
