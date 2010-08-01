@@ -13,9 +13,8 @@ public class GameMessageHandler {
         this.gameModel = gameModel;
     }
 
-
-
     public void routeMessage(UpdateData updateData) {
+        GWT.log("EVENT TYPE: " + updateData.getType());
         int counter = updateData.getCounter();
 
         if (!updateData.isEndUpdate()) {
@@ -27,10 +26,16 @@ public class GameMessageHandler {
         }
 
         if (updateData.isLobbyUpdate()) {
+            AndroidConsole.log("Lobby update");
+            GWT.log("Lobby update");
             lobbyModel.updateLobby(updateData);
         } else if (updateData.isBoardUpdate()) {
+            AndroidConsole.log("Board update " + updateData.getCards());
+            GWT.log("Board update " + updateData.getCards());
             gameModel.updateBoard(updateData.getCards());
         } else if (updateData.isEndUpdate()) {
+            AndroidConsole.log("End update " + updateData.getScoreList());
+            GWT.log("End update " + updateData.getScoreList());
             gameModel.endGame(updateData.getScoreList());
         }
     }

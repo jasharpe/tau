@@ -48,6 +48,7 @@
 			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
 			<arg value="-war"/>
 			<arg value="web"/>
+			<arg value="-style"/><arg value="PRETTY"/>
 			<arg line="${gwt.args}"/>
 			<arg value="com.taugame.tau.Tau"/>
 		</java>

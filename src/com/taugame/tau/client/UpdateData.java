@@ -11,6 +11,10 @@ import com.taugame.tau.shared.Card;
 public final class UpdateData extends JavaScriptObject {
     protected UpdateData() {}
 
+    public native String getType() /*-{
+        return this.t;
+    }-*/;
+
     public native int getCounter() /*-{
         return this.c;
     }-*/;

@@ -1,9 +1,5 @@
 package com.taugame.tau.client;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Random;
-
-
 /**
  * Small static wrapper to pass messages along to a GameModel from a pure
  * JS callback.
@@ -21,6 +17,7 @@ public class CometMessageHandler {
     }
 
     private static int actionCounter = 0;
+
     public static void updateBoard(UpdateData updateData) {
         gameMessageHandler.routeMessage(updateData);
     }
@@ -29,9 +26,12 @@ public class CometMessageHandler {
         $wnd.u = $entry(@com.taugame.tau.client.CometMessageHandler::updateBoard(Lcom/taugame/tau/client/UpdateData;));
     }-*/;
 
-    public static void listen() {
-        DOM.getElementById("comet-frame").setAttribute("src", "/game?count=" + Random.nextInt());
-    }
+    public native static void listen() /*-{
+        if ($wnd.persistentRequest != null) {
+            $wnd.persistentRequest.abort();
+        }
+        $wnd.longRequest();
+    }-*/;
 
     public static native void exportListen()/*-{
         $wnd.l = $entry(@com.taugame.tau.client.CometMessageHandler::listen());
