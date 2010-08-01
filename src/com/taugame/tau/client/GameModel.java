@@ -38,7 +38,7 @@ public class GameModel {
         return cards;
     }
 
-    public boolean getOver() {
+    public boolean getIsOver() {
         return over;
     }
 
@@ -80,6 +80,10 @@ public class GameModel {
         }
 
         return deselected;
+    }
+
+    public List<Integer> getSelectedCards() {
+        return selection.positionsSelected;
     }
 
     public boolean isSelected(int cardPosition) {

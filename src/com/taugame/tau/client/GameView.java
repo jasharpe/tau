@@ -1,5 +1,6 @@
 package com.taugame.tau.client;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
         int rows = getNumberOfCardRows();
 
         panel.clear();
-        if (model.getOver()) {
+        if (model.getIsOver()) {
             GWT.log("Rendering end game table");
             List<SimpleImmutablePair<String, Integer>> scores = model.getScores();
             Grid grid = new Grid(scores.size(), 2);
@@ -149,6 +150,14 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
         }
     }
 
+    private void selectNone() {
+        List<Integer> selectedCards =
+            new ArrayList<Integer>(model.getSelectedCards());
+        for (int position : selectedCards) {
+            selectCard(position);
+        }
+    }
+
     private int getNumberOfCardColumns() {
         return model.getCards().size() / getNumberOfCardRows();
     }
@@ -165,6 +174,10 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
         Integer position = keyMap.get(character);
         if (position != null) {
             selectCard(position);
+            return;
+        }
+        if (event.getKeyCode() == '`' || event.getKeyCode() == '\\') {
+            selectNone();
         }
     }
 }
