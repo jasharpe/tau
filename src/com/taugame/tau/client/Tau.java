@@ -36,6 +36,9 @@ public class Tau implements EntryPoint {
     }
 
     private void initialize() {
+        NativeEventDispatcher.exportBodyKeyPressHandler();
+        RootPanel.getBodyElement().setAttribute("onkeypress", "window.bodyKeyPressHandler(event);");
+
         StateController stateController = new StateController(RootPanel.get("game"));
         stateController.changeState(StateController.State.NONE, StateController.State.START);
     }

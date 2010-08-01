@@ -18,6 +18,7 @@ public class StateController {
     public StateController(RootPanel gameContainer) {
         this.state = State.NONE;
         this.gameContainer = gameContainer;
+        //((ServiceDefTarget)this.tauService).setServiceEntryPoint(Window.Location.getPath());
     }
 
     private void initializeGame() {
@@ -53,6 +54,11 @@ public class StateController {
         if (fromState != state) {
             GWT.log("Invalid previous state");
             return;
+        }
+
+        if (fromState == State.GAME_IN_PROGRESS) {
+            // unregister the GameView as a listener to key presses
+            NativeEventDispatcher.setNativeEventHandler(null);
         }
 
         state = toState;
@@ -101,7 +107,8 @@ public class StateController {
             gameContainer.add(lobbyView.getWidget());
         } else if (toState == State.GAME_IN_PROGRESS) {
             initializeGame();
-            View gameView = views.get(State.GAME_IN_PROGRESS);
+            GameView gameView = (GameView) views.get(State.GAME_IN_PROGRESS);
+            NativeEventDispatcher.setNativeEventHandler(gameView);
             gameContainer.clear();
             gameContainer.add(gameView.getWidget());
         } else if (toState == State.RESTART) {

@@ -9,24 +9,50 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.taugame.tau.shared.Card;
 
-public final class GameView implements View, ClickHandler {
+public final class GameView implements View, ClickHandler, NativeEventHandler {
 
     private final GameModel model;
     private final VerticalPanel panel = new VerticalPanel();
     private final Button restartButton;
     private final FlexTable table = new FlexTable();
+    private Map<Character, Integer> keyMap;
+    private Map<Integer, CardPanel> cardPanelMap = new HashMap<Integer, CardPanel>();
 
     public GameView(GameModel model) {
         this.model = model;
         restartButton = new Button("restart", this);
+        keyMap = new HashMap<Character, Integer>();
+        keyMap.put('q', 0);
+        keyMap.put('a', 1);
+        keyMap.put('z', 2);
+        keyMap.put('w', 3);
+        keyMap.put('s', 4);
+        keyMap.put('x', 5);
+        keyMap.put('e', 6);
+        keyMap.put('d', 7);
+        keyMap.put('c', 8);
+        keyMap.put('r', 9);
+        keyMap.put('f', 10);
+        keyMap.put('v', 11);
+        keyMap.put('t', 12);
+        keyMap.put('g', 13);
+        keyMap.put('b', 14);
+        keyMap.put('y', 15);
+        keyMap.put('h', 16);
+        keyMap.put('n', 17);
+        keyMap.put('u', 18);
+        keyMap.put('j', 19);
+        keyMap.put('m', 20);
     }
 
     public Widget getWidget() {
@@ -57,11 +83,13 @@ public final class GameView implements View, ClickHandler {
             }
             panel.add(grid);
             panel.add(restartButton);
+        } else {
+            FocusPanel fPanel;
         }
 
         table.removeAllRows();
         List<Card> cards = model.getCards();
-        final Map<Integer, CardPanel> cardPanelMap = new HashMap<Integer, CardPanel>();
+        cardPanelMap.clear();
         for (int row = 0; row < rows; row++) {
             table.insertRow(row);
             for (int column = 0; column < columns; column++) {
@@ -85,19 +113,7 @@ public final class GameView implements View, ClickHandler {
                     cardPanel.addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
-                            int deselected = model.selectCard(cardPosition);
-                            if (deselected != -1) {
-                                CardPanel deselectedCardPanel = cardPanelMap.get(deselected);
-                                deselectedCardPanel.removeStyleName("selectedCard");
-                                deselectedCardPanel.addStyleName("unselectedCard");
-                            }
-                            if (model.isSelected(cardPosition)) {
-                                cardPanel.removeStyleName("unselectedCard");
-                                cardPanel.addStyleName("selectedCard");
-                            } else {
-                                cardPanel.removeStyleName("selectedCard");
-                                cardPanel.addStyleName("unselectedCard");
-                            }
+                            selectCard(cardPosition);
                         }
                     });
                     cardPanel.addMouseDownHandler(new MouseDownHandler() {
@@ -116,11 +132,39 @@ public final class GameView implements View, ClickHandler {
         panel.insert(table, 0);
     }
 
+    private void selectCard(int cardPosition) {
+        int deselected = model.selectCard(cardPosition);
+        if (deselected != -1) {
+            CardPanel deselectedCardPanel = cardPanelMap.get(deselected);
+            deselectedCardPanel.removeStyleName("selectedCard");
+            deselectedCardPanel.addStyleName("unselectedCard");
+        }
+        CardPanel cardPanelChanged = cardPanelMap.get(cardPosition);
+        if (model.isSelected(cardPosition)) {
+            cardPanelChanged.removeStyleName("unselectedCard");
+            cardPanelChanged.addStyleName("selectedCard");
+        } else {
+            cardPanelChanged.removeStyleName("selectedCard");
+            cardPanelChanged.addStyleName("unselectedCard");
+        }
+    }
+
     private int getNumberOfCardColumns() {
         return model.getCards().size() / getNumberOfCardRows();
     }
 
     private int getNumberOfCardRows() {
         return 3;
+    }
+
+    /**
+     * key press
+     */
+    @Override public void onEvent(Event event) {
+        char character = Character.toLowerCase((char) event.getKeyCode());
+        Integer position = keyMap.get(character);
+        if (position != null) {
+            selectCard(position);
+        }
     }
 }
