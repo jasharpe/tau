@@ -94,8 +94,8 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
                 table.addCell(row);
                 Card card = cards.get(cardPosition);
                 final CardPanel cardPanel = new CardPanel();
-                cardPanelMap.put(cardPosition, cardPanel);
                 if (card != null) {
+                    cardPanelMap.put(cardPosition, cardPanel);
                     cardPanel.addStyleName("realCard");
                     if (model.isSelected(cardPosition)) {
                         cardPanel.addStyleName("selectedCard");
@@ -129,13 +129,18 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
     }
 
     private void selectCard(int cardPosition) {
+        CardPanel cardPanelChanged = cardPanelMap.get(cardPosition);
+        if (cardPanelChanged == null || model.getIsOver()) {
+            return;
+        }
+
         int deselected = model.selectCard(cardPosition);
         if (deselected != -1) {
             CardPanel deselectedCardPanel = cardPanelMap.get(deselected);
             deselectedCardPanel.removeStyleName("selectedCard");
             deselectedCardPanel.addStyleName("unselectedCard");
         }
-        CardPanel cardPanelChanged = cardPanelMap.get(cardPosition);
+
         if (model.isSelected(cardPosition)) {
             cardPanelChanged.removeStyleName("unselectedCard");
             cardPanelChanged.addStyleName("selectedCard");
@@ -171,7 +176,8 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
             selectCard(position);
             return;
         }
-        if (event.getKeyCode() == '`' || event.getKeyCode() == '\\') {
+        if (event.getKeyCode() == '`' || event.getKeyCode() == '\\'
+            || event.getKeyCode() == ' ') {
             selectNone();
         }
     }
