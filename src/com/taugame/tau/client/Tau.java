@@ -28,6 +28,9 @@ public class Tau implements EntryPoint, Initializer {
         CometMessageHandler.setInitializer(this);
         CometMessageHandler.exportInitialize();
 
+        // this delay is here to fix the "throbber of doom" in chrome and
+        // firefox. Basically, we can't start the persistent GET until the
+        // initial page load has completely finished.
         new Timer() {
             @Override
             public void run() {
@@ -35,10 +38,6 @@ public class Tau implements EntryPoint, Initializer {
             }
         }.schedule(1000);
     }
-
-    private native void exportInitializeGame() /*-{
-        $wnd.u = $entry(@com.taugame.tau.client.CometMessageHandler::updateBoard(Lcom/taugame/tau/client/UpdateData;));
-    }-*/;
 
     public void initialize() {
         NativeEventDispatcher.exportBodyKeyPressHandler();
