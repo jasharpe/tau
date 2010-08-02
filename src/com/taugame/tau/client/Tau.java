@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Tau implements EntryPoint {
+public class Tau implements EntryPoint, Initializer {
     /**
      * The message displayed to the user when the server cannot be reached or
      * returns an error.
@@ -25,17 +25,22 @@ public class Tau implements EntryPoint {
 
     public void onModuleLoad() {
         CometMessageHandler.exportSendBoardUpdate();
+        CometMessageHandler.setInitializer(this);
+        CometMessageHandler.exportInitialize();
 
         new Timer() {
             @Override
             public void run() {
                 startListening();
-                initialize();
             }
         }.schedule(1000);
     }
 
-    private void initialize() {
+    private native void exportInitializeGame() /*-{
+        $wnd.u = $entry(@com.taugame.tau.client.CometMessageHandler::updateBoard(Lcom/taugame/tau/client/UpdateData;));
+    }-*/;
+
+    public void initialize() {
         NativeEventDispatcher.exportBodyKeyPressHandler();
         RootPanel.getBodyElement().setAttribute("onkeypress", "window.bodyKeyPressHandler(event);");
 

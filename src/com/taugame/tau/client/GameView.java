@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -13,7 +12,6 @@ import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -73,7 +71,7 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
 
         panel.clear();
         if (model.getIsOver()) {
-            GWT.log("Rendering end game table");
+            Logger.log("Rendering end game table");
             List<SimpleImmutablePair<String, Integer>> scores = model.getScores();
             Grid grid = new Grid(scores.size(), 2);
             int row = 0;
@@ -84,8 +82,6 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
             }
             panel.add(grid);
             panel.add(restartButton);
-        } else {
-            FocusPanel fPanel;
         }
 
         table.removeAllRows();
@@ -110,7 +106,6 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
                     int offset = cardNumber * 80;
                     cardPanel.getElement().setAttribute("style",
                             "background-position: -" + offset + "px 0;");
-                    //cardPanel.add(new Label(card.toString()));
                     cardPanel.addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {

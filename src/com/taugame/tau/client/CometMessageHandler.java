@@ -5,21 +5,31 @@ package com.taugame.tau.client;
  * JS callback.
  */
 public class CometMessageHandler {
-    private static GameMessageHandler gameMessageHandler;
-    private static GameMessageHandler endGameMessageHandler;
+    private static GameMessageHandler gameMessageHandler = null;
+    private static Initializer initializer = null;
+
+    public static void setInitializer(Initializer initializer) {
+        CometMessageHandler.initializer = initializer;
+    }
+
+    public static void initialize() {
+        if (initializer != null) {
+            initializer.initialize();
+        }
+    }
+
+    public static native void exportInitialize()/*-{
+        $wnd.initialize = $entry(@com.taugame.tau.client.CometMessageHandler::initialize());
+    }-*/;
 
     public static void setUpdateListener(GameMessageHandler gameMessageHandler) {
         CometMessageHandler.gameMessageHandler = gameMessageHandler;
     }
 
-    public static void setEndGameListener(GameMessageHandler gameMessageHandler) {
-        CometMessageHandler.endGameMessageHandler = gameMessageHandler;
-    }
-
-    private static int actionCounter = 0;
-
     public static void updateBoard(UpdateData updateData) {
-        gameMessageHandler.routeMessage(updateData);
+        if (gameMessageHandler != null) {
+            gameMessageHandler.routeMessage(updateData);
+        }
     }
 
     public static native void exportSendBoardUpdate()/*-{

@@ -29,7 +29,6 @@ public class StateController {
             GameMessageHandler gameMessageHandler =
                 new GameMessageHandler(gameLobby, gameModel);
             CometMessageHandler.setUpdateListener(gameMessageHandler);
-            CometMessageHandler.setEndGameListener(gameMessageHandler);
             gameView = gameModel.getView();
             views.put(State.GAME_IN_PROGRESS, gameView);
             views.put(State.GAME_LOBBY, gameLobby.getView());
@@ -42,17 +41,17 @@ public class StateController {
     }
 
     public void changeState(State fromState, State toState) {
-        GWT.log("State change: " + fromState + " -> " + toState);
+        Logger.log("State change: " + fromState + " -> " + toState);
 
         // don't bother to state transition back into the same state
         if (toState == state) {
-            GWT.log("No state change needed");
+            Logger.log("No state change needed");
             return;
         }
 
         // prevent already stale states from grabbing control.
         if (fromState != state) {
-            GWT.log("Invalid previous state");
+            Logger.log("Invalid previous state");
             return;
         }
 

@@ -1,6 +1,5 @@
 package com.taugame.tau.client;
 
-import com.google.gwt.core.client.GWT;
 
 public class GameMessageHandler {
     private final LobbyModel lobbyModel;
@@ -14,28 +13,26 @@ public class GameMessageHandler {
     }
 
     public void routeMessage(UpdateData updateData) {
-        GWT.log("EVENT TYPE: " + updateData.getType());
+        Logger.log("EVENT TYPE: " + updateData.getType());
         int counter = updateData.getCounter();
 
         if (!updateData.isEndUpdate()) {
             if (counter < actionCounter) {
-                GWT.log("Not updating: expected action " + actionCounter + " but got action " + counter);
+                Logger.log("Not updating: expected action " + actionCounter + " but got action " + counter);
                 return;
             }
+            Logger.log("counter: " + counter);
             actionCounter = counter;
         }
 
         if (updateData.isLobbyUpdate()) {
-            AndroidConsole.log("Lobby update");
-            GWT.log("Lobby update");
+            Logger.log("Lobby update");
             lobbyModel.updateLobby(updateData);
         } else if (updateData.isBoardUpdate()) {
-            AndroidConsole.log("Board update " + updateData.getCards());
-            GWT.log("Board update " + updateData.getCards());
+            Logger.log("Board update " + updateData.getCards());
             gameModel.updateBoard(updateData.getCards());
         } else if (updateData.isEndUpdate()) {
-            AndroidConsole.log("End update " + updateData.getScoreList());
-            GWT.log("End update " + updateData.getScoreList());
+            Logger.log("End update " + updateData.getScoreList());
             gameModel.endGame(updateData.getScoreList());
         }
     }

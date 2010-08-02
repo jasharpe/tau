@@ -15,6 +15,8 @@ persistentRequest = null;
 startDelimiter = "<s" + "cript type='text/javascript'>";
 endDelimiter = "</" + "script>";
 
+get_ready = false;
+
 longRequest = function() {
 	streamreq = new XMLHttpRequest();
 	byteoffset = 0;
@@ -24,6 +26,13 @@ longRequest = function() {
 		if (typeof streamreq == "undefined")
 			return;
 		if (streamreq.readyState == 3) {
+			if (!get_ready) {
+				window.initialize();
+				get_ready = true;
+			}
+			if (!window.longRequestReady) {
+				window.longRequestReady = true;
+			}
 			var buffer = streamreq.responseText;
 			var newdata = buffer.substring(byteoffset);
 			byteoffset = buffer.length;
