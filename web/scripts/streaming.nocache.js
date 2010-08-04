@@ -58,6 +58,8 @@ longRequest = function() {
 		} else if (streamreq.readyState == 4) {
 			r();
 			delete streamreq;
+			// try to restart the connection in 500ms
+			setTimeout('longRequest()', 500);
 		}
 	};
 	persistentRequest = streamreq;
