@@ -106,15 +106,10 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
                     int offset = cardNumber * 80;
                     cardPanel.getElement().setAttribute("style",
                             "background-position: -" + offset + "px 0;");
-                    cardPanel.addClickHandler(new ClickHandler() {
-                        @Override
-                        public void onClick(ClickEvent event) {
-                            selectCard(cardPosition);
-                        }
-                    });
                     cardPanel.addMouseDownHandler(new MouseDownHandler() {
                         @Override
                         public void onMouseDown(MouseDownEvent event) {
+                            selectCard(cardPosition);
                             event.preventDefault();
                         }
                     });
