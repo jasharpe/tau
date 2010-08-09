@@ -3,6 +3,7 @@ package com.taugame.tau.images;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.TexturePaint;
 import java.awt.geom.Ellipse2D;
@@ -30,6 +31,8 @@ public class SpriteGenerator {
         BufferedImage bufferedImage = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = bufferedImage.createGraphics();
 
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
         //colour, number, fill, shape
         for (int colour = 0; colour < 3; colour++) {
             for (int number = 0; number < 3; number++) {
@@ -42,21 +45,6 @@ public class SpriteGenerator {
                 }
             }
         }
-
-        /*BufferedImage textureImage = new BufferedImage(1, 2, BufferedImage.TYPE_INT_ARGB);
-        textureImage.setRGB(0, 1, Color.BLUE.getRGB());
-
-        Graphics2D ig2 = bufferedImage.createGraphics();
-
-        TexturePaint texture = new TexturePaint(textureImage, new Rectangle(0, 0, 1, 2));
-
-        ig2.setPaint(texture);
-        //ig2.setPaint(Color.BLUE);
-        //ig2.fill(new Rectangle(20, 30, 40, 60));
-        // draw rectangle using lines
-        //ig2.draw(new Rectangle(20, 30, 40, 60));
-        //ig2.fill(new Ellipse2D.Double(20, 30, 40, 40));
-        ig2.fill(new Triangle(40, 60, 20, 20).getShape());*/
 
         try {
             ImageIO.write(bufferedImage, "PNG", imageFile);
@@ -112,10 +100,11 @@ public class SpriteGenerator {
             color = Color.BLUE;
         }
 
+        TexturePaint texture = null;
         if (fill == 1) {
             BufferedImage textureImage = new BufferedImage(1, 2, BufferedImage.TYPE_INT_ARGB);
             textureImage.setRGB(0, 1, color.getRGB());
-            TexturePaint texture = new TexturePaint(textureImage, new Rectangle(0, 0, 1, 2));
+            texture = new TexturePaint(textureImage, new Rectangle(0, 1, 1, 2));
             graphics.setPaint(texture);
         } else {
             graphics.setPaint(color);
@@ -124,6 +113,11 @@ public class SpriteGenerator {
         for (Shape aShape : shapes) {
             if (fill == 0) {
                 graphics.draw(aShape);
+            } else if (fill == 1) {
+                graphics.fill(aShape);
+                /*graphics.setPaint(color);
+                graphics.draw(aShape);
+                graphics.setPaint(texture);*/
             } else {
                 graphics.fill(aShape);
             }
