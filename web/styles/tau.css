@@ -1,23 +1,57 @@
 /* have to include border in width/height */
 .fakeCard {
-    width:82px;
-    height:122px;
+    width:84px;
+    height:124px;
 }
 
 .realCard {
-    height:120px;
-    width:80px;
-    background:url('/images/cards.png') no-repeat scroll 0 0 transparent;
+    height:124px;
+    width:84px;
 }
 
-.selectedCard {
+.unselectedCard .cardShadow {
+	background-color:#ddd;
+}
+
+.selectedCard .cardShadow {
+    background-color:#FCC;
+}
+
+.cardShadow {
+    height:122px;
+    width:82px;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    z-index:-1;
+}
+
+.unselectedCard .cardContent {
+    background:url('/images/cards.png') no-repeat scroll 0 0 #fff;
+}
+
+.selectedCard .cardContent {
+    background:url('/images/cards.png') no-repeat scroll 0 0 #fff;
+}
+
+.cardContent {
+	height:120px;
+	width:80px;
+	z-index:3;
+	-webkit-border-radius:5px;
+    -moz-border-radius:5px;
+}
+
+.selectedCard .cardContent {
     border-color:red;
     border-width:1px;
     border-style:solid;
 }
 
-.unselectedCard {
-    border-color:black;
+.unselectedCard .cardContent {
+    border-color:#bbb;
     border-width:1px;
     border-style:solid;
 }
