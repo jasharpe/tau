@@ -10,12 +10,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.taugame.tau.shared.Card;
@@ -107,14 +105,7 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
                     int cardNumber = card.get(0) + 3 * card.get(1) + 9 * card.get(2) + 27 * card.get(3);
                     int offset = cardNumber * 80;
 
-                    Panel cardContent = new AbsolutePanel();
-                    cardContent.setStyleName("cardContent");
-                    Panel cardShadow = new AbsolutePanel();
-                    cardShadow.setStyleName("cardShadow");
-                    cardShadow.getElement().setAttribute("style", "");
-                    cardPanel.add(cardContent);
-                    cardPanel.add(cardShadow);
-                    cardContent.getElement().setAttribute("style",
+                    cardPanel.getElement().setAttribute("style",
                             "background-position: -" + offset + "px 0;");
 
                     cardPanel.addMouseDownHandler(new MouseDownHandler() {

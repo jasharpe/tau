@@ -1,56 +1,32 @@
 /* have to include border in width/height */
 .fakeCard {
-    width:84px;
-    height:124px;
+    width:82px;
+    height:122px;
 }
 
 .realCard {
-    height:124px;
-    width:84px;
-}
-
-.unselectedCard .cardShadow {
-	background-color:#ddd;
-}
-
-.selectedCard .cardShadow {
-    background-color:#FCC;
-}
-
-.cardShadow {
-    height:122px;
-    width:82px;
-    position: absolute;
-    left: 2px;
-    top: 2px;
+    height:120px;
+    width:80px;
+    background:url('/images/cards.png') no-repeat scroll 0 0 transparent;
     -webkit-border-radius:5px;
     -moz-border-radius:5px;
-    z-index:-1;
+    margin-right:6px;
+    margin-bottom:6px;
 }
 
-.unselectedCard .cardContent {
-    background:url('/images/cards.png') no-repeat scroll 0 0 #fff;
-}
-
-.selectedCard .cardContent {
-    background:url('/images/cards.png') no-repeat scroll 0 0 #fff;
-}
-
-.cardContent {
-	height:120px;
-	width:80px;
-	z-index:3;
-	-webkit-border-radius:5px;
-    -moz-border-radius:5px;
-}
-
-.selectedCard .cardContent {
+.selectedCard {
+	-moz-box-shadow:2px 2px 2px #fbb;
+	-webkit-box-shadow:2px 2px 2px #fbb;
+	box-shadow:2px 2px 2px #fbb;
     border-color:red;
     border-width:1px;
     border-style:solid;
 }
 
-.unselectedCard .cardContent {
+.unselectedCard {
+	-moz-box-shadow:2px 2px 2px #ddd;
+	-webkit-box-shadow:2px 2px 2px #ddd;
+    box-shadow:2px 2px 2px #ddd;
     border-color:#bbb;
     border-width:1px;
     border-style:solid;
