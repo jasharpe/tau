@@ -123,6 +123,7 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
         }
 
         panel.insert(table, 0);
+        setFocus();
     }
 
     private void selectCard(int cardPosition) {
@@ -176,6 +177,13 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
         if (event.getKeyCode() == '`' || event.getKeyCode() == '\\'
             || event.getKeyCode() == ' ') {
             selectNone();
+        }
+    }
+
+    @Override
+    public void setFocus() {
+        if (model.getIsOver()) {
+            restartButton.setFocus(true);
         }
     }
 }

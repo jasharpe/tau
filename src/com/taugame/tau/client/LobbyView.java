@@ -41,4 +41,9 @@ public class LobbyView implements View, ClickHandler {
         readyButton.setEnabled(false);
         model.toggleReady();
     }
+
+    @Override
+    public void setFocus() {
+        readyButton.setFocus(true);
+    }
 }

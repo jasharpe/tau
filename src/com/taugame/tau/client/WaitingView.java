@@ -15,4 +15,6 @@ public class WaitingView implements View {
     public Widget getWidget() {
         return panel;
     }
+
+    public void setFocus() {}
 }

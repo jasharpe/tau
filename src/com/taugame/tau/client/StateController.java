@@ -83,7 +83,7 @@ public class StateController {
                 }
             });
         } else if (toState == State.ENTER_NAME) {
-            NameView nameView = (NameView) views.get(State.ENTER_NAME);
+            View nameView = views.get(State.ENTER_NAME);
             if (nameView == null) {
                 nameView = new NameModel(tauService, this).getView();
                 views.put(State.ENTER_NAME, nameView);
@@ -104,6 +104,7 @@ public class StateController {
             View lobbyView = views.get(State.GAME_LOBBY);
             gameContainer.clear();
             gameContainer.add(lobbyView.getWidget());
+            lobbyView.setFocus();
         } else if (toState == State.GAME_IN_PROGRESS) {
             initializeGame();
             GameView gameView = (GameView) views.get(State.GAME_IN_PROGRESS);
