@@ -115,6 +115,21 @@ public final class GameView implements View, ClickHandler, NativeEventHandler {
                             event.preventDefault();
                         }
                     });
+
+                    cardPanel.addTouchHandler(new TouchHandler() {
+                        @Override public void onTouchEnd(Event event) {
+                            event.preventDefault();
+                        }
+
+                        @Override public void onTouchMove(Event event) {
+                            event.preventDefault();
+                        }
+
+                        @Override public void onTouchStart(Event event) {
+                            selectCard(cardPosition);
+                            event.preventDefault();
+                        }
+                    });
                 } else {
                     cardPanel.addStyleName("fakeCard");
                 }
