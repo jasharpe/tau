@@ -11,6 +11,6 @@ import com.taugame.tau.shared.Card;
 public interface TauService extends RemoteService {
     Boolean joinAs(String name);
     void setReady(boolean ready);
-    void submit(Card card1, Card card2, Card card3);
+    Boolean submit(Card card1, Card card2, Card card3);
     String join();
 }

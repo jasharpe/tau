@@ -10,6 +10,7 @@ public class Logger {
     private static final int GWT_LOG = 1;
     private static final int CONSOLE_LOG = 2;
 
+    //private static final int LOG = GWT_LOG | CONSOLE_LOG;
     private static final int LOG = 0;
 
     @SuppressWarnings("all")

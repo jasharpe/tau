@@ -9,12 +9,6 @@ import com.taugame.tau.shared.Card;
 
 public class GameModel {
 
-    private static final AsyncCallback<Void> NO_OP_CALLBACK =
-        new AsyncCallback<Void>() {
-            @Override public void onFailure(Throwable caught) {}
-            @Override public void onSuccess(Void result) {}
-        };
-
     private final GameView view = new GameView(this);
     private final TauServiceAsync tauService;
     private final StateController stateController;
@@ -75,7 +69,19 @@ public class GameModel {
                 // known when the server sends the next update, so no callback
                 // is required.
                 tauService.submit(selectedCards.get(0), selectedCards.get(1),
-                        selectedCards.get(2), NO_OP_CALLBACK);
+                        selectedCards.get(2), new AsyncCallback<Boolean>() {
+                            @Override public void onFailure(Throwable caught) {
+                                Logger.log("submit failed");
+                                CometMessageHandler.restartIntentionally();
+                            }
+
+                            @Override public void onSuccess(Boolean result) {
+                                if (!result) {
+                                    CometMessageHandler.restartIntentionally();
+                                }
+                            }
+
+                });
             }
         }
 

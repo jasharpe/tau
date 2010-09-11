@@ -180,12 +180,14 @@ public class TauServiceImpl extends RemoteServiceServlet implements TauService, 
         }
     }
 
-    @Override
-    synchronized public void submit(Card card1, Card card2, Card card3) {
+    @Override synchronized public Boolean submit(Card card1, Card card2, Card card3) {
         String name = getName();
+        logger.info(String.valueOf(name) + " submitted a Tau");
         if (name != null) {
             gm.submit(name, card1, card2, card3);
+            return true;
         }
+        return false;
     }
 
     private String getName() {

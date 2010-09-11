@@ -12,14 +12,37 @@ public class CometMessageHandler {
         CometMessageHandler.initializer = initializer;
     }
 
-    public static void initialize() {
+    private static void initialize() {
         if (initializer != null) {
             initializer.initialize();
         }
     }
 
+    public static void restartIntentionally() {
+        setIntentionalRestartTrue();
+        restart();
+        setIntentionalRestartFalse();
+    }
+
+    private static native void setIntentionalRestartTrue() /*-{
+        $wnd.intentionalRestart = true;
+    }-*/;
+
+    private static native void setIntentionalRestartFalse() /*-{
+        $wnd.intentionalRestart = false;
+    }-*/;
+
+    public static void restart() {
+        Logger.log("restarting");
+        initializer.reinitialize();
+    }
+
     public static native void exportInitialize()/*-{
         $wnd.initialize = $entry(@com.taugame.tau.client.CometMessageHandler::initialize());
+    }-*/;
+
+    public static native void exportRestart()/*-{
+        $wnd.restart = $entry(@com.taugame.tau.client.CometMessageHandler::restart());
     }-*/;
 
     public static void setUpdateListener(GameMessageHandler gameMessageHandler) {

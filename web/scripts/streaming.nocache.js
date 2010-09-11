@@ -15,12 +15,14 @@ persistentRequest = null;
 startDelimiter = "<s" + "cript type='text/javascript'>";
 endDelimiter = "</" + "script>";
 
+window.intentionalRestart = false;
+
 get_ready = false;
 
 longRequest = function() {
 	streamreq = new XMLHttpRequest();
 	byteoffset = 0;
-	var url = "/game?nuclear_launch_code=" + Math.random();//Math.floor(Math.random() * 10000000);
+	var url = "/game?nuclear_launch_code=" + Math.random();
 	streamreq.open("GET", url, true);
 	streamreq.onreadystatechange = function() {
 		if (typeof streamreq == "undefined")
@@ -58,8 +60,10 @@ longRequest = function() {
 		} else if (streamreq.readyState == 4) {
 			r();
 			delete streamreq;
-			// try to restart the connection in 500ms
-			setTimeout('longRequest()', 500);
+			if (!window.intentionalRestart) {
+				// try to restart the connection in 500ms
+				setTimeout('window.restart()', 500);
+			}
 		}
 	};
 	persistentRequest = streamreq;

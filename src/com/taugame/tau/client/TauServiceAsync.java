@@ -9,6 +9,6 @@ import com.taugame.tau.shared.Card;
 public interface TauServiceAsync {
   void joinAs(String name, AsyncCallback<Boolean> callback);
   void setReady(boolean ready, AsyncCallback<Void> callback);
-  void submit(Card card1, Card card2, Card card3, AsyncCallback<Void> callback);
+  void submit(Card card1, Card card2, Card card3, AsyncCallback<Boolean> callback);
   void join(AsyncCallback<String> callback);
 }

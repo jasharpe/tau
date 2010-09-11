@@ -115,10 +115,12 @@ public class StateController {
             views.remove(State.GAME_IN_PROGRESS);
             views.remove(State.GAME_LOBBY);
             changeState(State.RESTART, State.START);
+        } else if (toState == State.FULL_RESTART) {
+            changeState(State.FULL_RESTART, State.NONE);
         }
     }
 
     public enum State {
-        NONE, START, ENTER_NAME, GAME_STATE_UNKNOWN, GAME_LOBBY, GAME_IN_PROGRESS, RESTART;
+        NONE, START, ENTER_NAME, GAME_STATE_UNKNOWN, GAME_LOBBY, GAME_IN_PROGRESS, RESTART, FULL_RESTART;
     }
 }
